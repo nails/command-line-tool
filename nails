@@ -1,0 +1,90 @@
+if [ "$1" == "new" ]
+then
+
+    # Directory empty?
+    curDir="$(pwd)"
+
+    if find "$curDir" -maxdepth 0 -empty | read;
+    then
+
+        echo ""
+        echo ""
+        echo "GETTING NAILS SKELETON"
+        echo "----------------------"
+        git clone git@github.com:nailsapp/skeleton-app.git .
+
+        echo ""
+        echo ""
+        echo "COMPOSER UPDATE"
+        echo "---------------"
+        composer update
+
+        echo ""
+        echo ""
+        echo "EXECUTING NAILS INSTALLER"
+        echo "-------------------------"
+        ./nails.php install
+
+        echo ""
+        echo ""
+        echo "PREPARING REPOSITORY"
+        echo "--------------------"
+        rm -rf .git/ && rmdir .git
+        git flow init -d
+        git add .
+        git commit -m "Initial Commit"
+
+    else
+
+        echo ""
+        echo "Directory is not empty!"
+        echo ""
+
+    fi
+
+elif [ "$1" == "install" ]
+then
+
+    nailsConsole="$(pwd)/nails.php"
+    if [[ -x "$nailsConsole" ]]
+    then
+
+        ./nails.php install
+
+    else
+
+        echo ""
+        echo "Could not find Nails console, or it is not executable"
+        echo ""
+
+    fi
+
+elif [ "$1" == "migrate" ]
+then
+
+    nailsConsole="$(pwd)/nails.php"
+    if [[ -x "$nailsConsole" ]]
+    then
+
+        ./nails.php migrate
+
+    else
+
+        echo ""
+        echo "Could not find Nails console, or it is not executable"
+        echo ""
+
+    fi
+
+else
+
+    echo ""
+    echo "Please specify a command."
+    echo ""
+    echo "You can use:"
+    echo ""
+    echo "new     - Creates a new empty site and runs the Nails installer."
+    echo "install - Runs the Nails installer."
+    echo "migrate - Runs the Nails Database Migration tool."
+    echo ""
+fi
