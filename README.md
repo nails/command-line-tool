@@ -20,9 +20,9 @@ This is the command line tool for Nails. It is an installable executeable which 
 
 You have a new binary (well, technically a shell script) called `nails`. You can pass one of three arguments to the tool:
 
-- `nails new` will clone the skeleton repository, install all the dependancies, run the Nails installer and then prepare a new repository for the app.
-- `nails install` will run the Nails installer (you can also run it directly by issuing `./nails.php install`, but this way is cleaner).
-- `nails migrate` will run the Nails Database Migration tool (you can also run it directly by issuing `./nails.php migrate`, but this way is cleaner).
+- `nails new` will clone the skeleton repository, install all the dependancies, run the Nails installer and then prepare a new repository for the app. This si your first step for a new Nails site.
+- `nails install` will run the Nails installer, use this to configure your app.
+- `nails migrate` will run the Nails Database Migration tool, use this to keep your database up to date.
 
 
 ##Prerequisites
