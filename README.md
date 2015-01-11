@@ -16,7 +16,7 @@ This is the command line tool for Nails. It is an installable executeable which 
 3. Place the symlink somewhere in your PATH
 4. To update, simply `git pull origin master`
 
-###Usage
+##Usage
 
 You can pass one of three arguments to the tool:
 
