@@ -2,11 +2,19 @@
 
 This is the command line tool for Nails. It is an installable executeable which makes it easy to create new Nails apps, install (or reinstall) them, or to migrate databases.
 
-###Installation:
+##Installation:
+
+###Using Homebrew
+1. Tap Nails using `brew tap nailsapp/nailsapp`
+2. Install using `brew install nails`
+3. Update as normal using `brew update && brew upgrade`
+
+###Manually
 
 1. Clone this repository
 2. Create a symlink of the executable
 3. Place the symlink somewhere in your PATH
+4. To update, simply `git pull origin master`
 
 ###Usage
 

@@ -1,9 +1,10 @@
+curDir="$(pwd)"
+nailsConsole="$(pwd)/nails.php"
+
 if [ "$1" == "new" ]
 then
 
     # Directory empty?
-    curDir="$(pwd)"
-
     if find "$curDir" -maxdepth 0 -empty | read;
     then
 
@@ -11,7 +12,7 @@ then
         echo ""
         echo "GETTING NAILS SKELETON"
         echo "----------------------"
-        git clone git@github.com:nailsapp/skeleton-app.git .
+        git clone https://github.com/nailsapp/skeleton-app.git .
 
         echo ""
         echo ""
@@ -34,6 +35,13 @@ then
         git add .
         git commit -m "Initial Commit"
 
+        echo ""
+        echo ""
+        echo "CLEANING UP"
+        echo "-----------"
+        echo "Complete!"
+        echo ""
+
     else
 
         echo ""
@@ -45,7 +53,6 @@ then
 elif [ "$1" == "install" ]
 then
 
-    nailsConsole="$(pwd)/nails.php"
     if [[ -x "$nailsConsole" ]]
     then
 
@@ -62,7 +69,6 @@ then
 elif [ "$1" == "migrate" ]
 then
 
-    nailsConsole="$(pwd)/nails.php"
     if [[ -x "$nailsConsole" ]]
     then
 
