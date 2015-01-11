@@ -18,16 +18,14 @@ This is the command line tool for Nails. It is an installable executeable which 
 
 ##Usage
 
-You can pass one of three arguments to the tool:
+You have a new binary (well, technically a shell script) called `nails`. You can pass one of three arguments to the tool:
 
-- `new` will clone the skeleton repository, install all the dependancies, run the Nails installer and then prepare a new repository for the app
-- `install` will run the Nails installer (you can also run it directly by issuing `./nails.php install`, but this way is cleaner)
-- `install` will run the Nails Database Migration tool (you can also run it directly by issuing `./nails.php migrate`, but this way is cleaner)
+- `nails new` will clone the skeleton repository, install all the dependancies, run the Nails installer and then prepare a new repository for the app.
+- `nails install` will run the Nails installer (you can also run it directly by issuing `./nails.php install`, but this way is cleaner).
+- `nails migrate` will run the Nails Database Migration tool (you can also run it directly by issuing `./nails.php migrate`, but this way is cleaner).
 
 
-###Prerequisites
+##Prerequisites
 - Composer is installed
 - Git is installed
 - Git flow extension is installed
-
-Docs: http://nailsapp.co.uk/console/tool
