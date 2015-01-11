@@ -1,6 +1,8 @@
 # Change Log
 
----
+## Version 0.1.2
+Release date: 11 January 2015
+- Minor README.md updates
 
 ## Version 0.1.1
 Release date: 11 January 2015
