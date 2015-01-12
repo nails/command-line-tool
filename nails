@@ -108,7 +108,7 @@ elif [ "$1" == "--version" ] || [ "$1" == "-v" ]
 then
 
     echo ""
-    echo "Nails Command Line tool 0.2.0"
+    echo "Nails Command Line tool 0.2.2"
     echo ""
 
 else
