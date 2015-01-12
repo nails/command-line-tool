@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.2.1
+Released 12 January 2015
+- Added `--version` and `-v` options to display version information
+
 ## Version 0.2.0
 Released 12 January 2015
 - `install` and `migrate` will now also run `composer install` prior to executing

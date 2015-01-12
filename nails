@@ -95,6 +95,13 @@ then
         echo "------------------------------"
         ./nails.php migrate
 
+elif [ "$1" == "--version" ] || [ "$1" == "-v" ]
+then
+
+    echo ""
+    echo "Nails Command Line tool 0.2.0"
+    echo ""
+
 else
 
     echo ""
@@ -102,9 +109,10 @@ else
     echo ""
     echo "You can use:"
     echo ""
-    echo "new     - Creates a new empty site and runs the Nails installer."
-    echo "install - Checks dependencies are installed then runs the Nails installer."
-    echo "migrate - Checks dependencies are installed then runs the Nails Database Migration tool."
-    echo "upgrade - Updates all dependencies then runs the Nails installer."
+    echo "new            - Creates a new empty site and runs the Nails installer."
+    echo "install        - Checks dependencies are installed then runs the Nails installer."
+    echo "migrate        - Checks dependencies are installed then runs the Nails Database Migration tool."
+    echo "upgrade        - Updates all dependencies then runs the Nails installer."
+    echo "--version (-v) - Displays version information."
     echo ""
 fi
