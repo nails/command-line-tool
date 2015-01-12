@@ -53,34 +53,47 @@ then
 elif [ "$1" == "install" ]
 then
 
-    if [[ -x "$nailsConsole" ]]
-    then
+        echo ""
+        echo ""
+        echo "COMPOSER INSTALL"
+        echo "----------------"
+        composer install
 
+        echo ""
+        echo ""
+        echo "EXECUTING NAILS INSTALLER"
+        echo "-------------------------"
         ./nails.php install
-
-    else
-
-        echo ""
-        echo "Could not find Nails console, or it is not executable"
-        echo ""
-
-    fi
 
 elif [ "$1" == "migrate" ]
 then
 
-    if [[ -x "$nailsConsole" ]]
-    then
+        echo ""
+        echo ""
+        echo "COMPOSER INSTALL"
+        echo "----------------"
+        composer install
 
+        echo ""
+        echo ""
+        echo "EXECUTING NAILS MIGRATION TOOL"
+        echo "------------------------------"
         ./nails.php migrate
 
-    else
+elif [ "$1" == "upgrade" ]
+then
 
         echo ""
-        echo "Could not find Nails console, or it is not executable"
         echo ""
+        echo "COMPOSER UPDATE"
+        echo "---------------"
+        composer update
 
-    fi
+        echo ""
+        echo ""
+        echo "EXECUTING NAILS INSTALLER"
+        echo "------------------------------"
+        ./nails.php migrate
 
 else
 
@@ -90,7 +103,8 @@ else
     echo "You can use:"
     echo ""
     echo "new     - Creates a new empty site and runs the Nails installer."
-    echo "install - Runs the Nails installer."
-    echo "migrate - Runs the Nails Database Migration tool."
+    echo "install - Checks dependencies are installed then runs the Nails installer."
+    echo "migrate - Checks dependencies are installed then runs the Nails Database Migration tool."
+    echo "upgrade - Updates all dependencies then runs the Nails installer."
     echo ""
 fi
