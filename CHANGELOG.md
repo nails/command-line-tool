@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.2.2
+Released 12 January 2015
+- Can now supply an optional second argument to `nails new` to define the name of the folder/app
+
 ## Version 0.2.1
 Released 12 January 2015
 - Added `--version` and `-v` options to display version information

@@ -22,9 +22,8 @@ to create new Nails apps, install (or reinstall) them, or to migrate databases.
 You have a new binary (well, technically a shell script) called `nails`. You can pass one of
 three arguments to the tool:
 
-- `nails new` will clone the skeleton repository, install all the dependancies, run the Nails
-   Installer and then prepare a new repository for the app. This is your first step for a new
-   Nails site.
+- `nails new folderName` will clone the skeleton repository into `folderName`, install all
+   the dependancies, run the Nails Installer and then prepare a new repository for the app.
 - `nails install` will check dependencies are installed then run the Nails Installer.
 - `nails migrate` will check dependencies are installed then run the Nails Migration tool.
 - `nails upgrade` will update all dependencies to their latest version then run the Nails
