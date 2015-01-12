@@ -4,6 +4,15 @@ nailsConsole="$(pwd)/nails.php"
 if [ "$1" == "new" ]
 then
 
+    # Do we have a folder name?
+    if [ "$2" != "" ]
+    then
+
+        mkdir "$2"
+        cd "$2"
+        curDir="$(pwd)"
+    fi
+
     # Directory empty?
     if find "$curDir" -maxdepth 0 -empty | read;
     then
