@@ -1,5 +1,5 @@
 curDir="$(pwd)"
-nailsConsole="$(pwd)/nails.php"
+version="0.2.2"
 
 if [ "$1" == "new" ]
 then
@@ -62,6 +62,17 @@ then
 elif [ "$1" == "install" ]
 then
 
+    if [ ! -f ./nails.php ]
+    then
+
+        echo ""
+        echo ""
+        echo "Not a Nails application."
+        echo ""
+        echo ""
+
+    else
+
         echo ""
         echo ""
         echo "COMPOSER INSTALL"
@@ -72,10 +83,22 @@ then
         echo ""
         echo "EXECUTING NAILS INSTALLER"
         echo "-------------------------"
-        ./nails.php install
+        ./nails.php install $2
+    fi
 
 elif [ "$1" == "migrate" ]
 then
+
+    if [ ! -f ./nails.php ]
+    then
+
+        echo ""
+        echo ""
+        echo "Not a Nails application."
+        echo ""
+        echo ""
+
+    else
 
         echo ""
         echo ""
@@ -89,8 +112,21 @@ then
         echo "------------------------------"
         ./nails.php migrate
 
+    fi
+
 elif [ "$1" == "upgrade" ]
 then
+
+    if [ ! -f ./nails.php ]
+    then
+
+        echo ""
+        echo ""
+        echo "Not a Nails application."
+        echo ""
+        echo ""
+
+    else
 
         echo ""
         echo ""
@@ -103,12 +139,13 @@ then
         echo "EXECUTING NAILS INSTALLER"
         echo "------------------------------"
         ./nails.php migrate
+    fi
 
 elif [ "$1" == "--version" ] || [ "$1" == "-v" ]
 then
 
     echo ""
-    echo "Nails Command Line tool 0.2.2"
+    echo "Nails Command Line tool $version"
     echo ""
 
 else
