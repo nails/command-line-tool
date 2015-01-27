@@ -1,5 +1,5 @@
 curDir="$(pwd)"
-version="0.2.3"
+version="0.3.0"
 
 if [ "$1" == "new" ]
 then
@@ -28,6 +28,12 @@ then
         echo "COMPOSER UPDATE"
         echo "---------------"
         composer update
+
+        echo ""
+        echo ""
+        echo "BOWER UPDATE"
+        echo "------------"
+        bower update -S
 
         echo ""
         echo ""
@@ -81,6 +87,12 @@ then
 
         echo ""
         echo ""
+        echo "BOWER INSTALL"
+        echo "-------------"
+        bower install
+
+        echo ""
+        echo ""
         echo "EXECUTING NAILS INSTALLER"
         echo "-------------------------"
         ./nails.php install $2
@@ -105,6 +117,12 @@ then
         echo "COMPOSER INSTALL"
         echo "----------------"
         composer install
+
+        echo ""
+        echo ""
+        echo "BOWER INSTALL"
+        echo "-------------"
+        bower install
 
         echo ""
         echo ""
@@ -133,6 +151,12 @@ then
         echo "COMPOSER UPDATE"
         echo "---------------"
         composer update
+
+        echo ""
+        echo ""
+        echo "BOWER UPDATE"
+        echo "------------"
+        bower update -S
 
         echo ""
         echo ""

@@ -1,6 +1,13 @@
 # Change Log
 
 
+## Version 0.3.0
+
+Released 27 January 2015
+
+- Bower is now executed at the same points composer is
+
+
 ## Version 0.2.2
 
 Released 12 January 2015

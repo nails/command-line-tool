@@ -32,5 +32,6 @@ three arguments to the tool:
 
 ## Prerequisites
 - Composer is installed
+- Bower is installed
 - Git is installed
 - Git flow extension is installed
