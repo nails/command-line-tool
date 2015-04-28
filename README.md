@@ -1,7 +1,7 @@
 # Command Line tool for Nails
 
-This is the command line tool for Nails. It is an installable executeable which makes it easy
-to create new Nails apps, install (or reinstall) them, or to migrate databases.
+This is the command line tool for Nails. It is an installable executeable which makes it easy to create new
+Nails apps, install (or reinstall) them, or to migrate databases.
 
 ## Installation:
 
@@ -19,15 +19,15 @@ to create new Nails apps, install (or reinstall) them, or to migrate databases.
 
 ## Usage
 
-You have a new binary (well, technically a shell script) called `nails`. You can pass one of
-three arguments to the tool:
+You have a new binary (well, technically a shell script) called `nails`. You can pass one of the following
+arguments to the tool:
 
-- `nails new folderName` will clone the skeleton repository into `folderName`, install all
-   the dependancies, run the Nails Installer and then prepare a new repository for the app.
+- `nails new folderName` will clone the skeleton repository into `folderName`, install all the dependancies,
+  run the Nails Installer and then prepare a new repository for the app.
 - `nails install` will check dependencies are installed then run the Nails Installer.
 - `nails migrate` will check dependencies are installed then run the Nails Migration tool.
-- `nails upgrade` will update all dependencies to their latest version then run the Nails
-  Migration tool.
+- `nails upgrade` will update all dependencies to their latest version then run the Nails Migration tool.
+- `nails test` will run PHPUnit tests for the application.
 
 
 ## Prerequisites
