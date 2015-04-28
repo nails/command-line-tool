@@ -165,6 +165,39 @@ then
         ./nails.php migrate
     fi
 
+elif [ "$1" == "test" ]
+then
+
+    if [ ! -f ./nails.php ]
+    then
+
+        echo ""
+        echo ""
+        echo "Not a Nails application."
+        echo ""
+        echo ""
+
+    else
+
+        echo ""
+        echo ""
+        echo "COMPOSER INSTALL"
+        echo "----------------"
+        composer install
+
+        echo ""
+        echo ""
+        echo "BOWER INSTALL"
+        echo "-------------"
+        bower install
+
+        echo ""
+        echo ""
+        echo "EXECUTING NAILS INSTALLER"
+        echo "-------------------------"
+        ./nails.php test
+    fi
+
 elif [ "$1" == "--version" ] || [ "$1" == "-v" ]
 then
 
@@ -183,6 +216,7 @@ else
     echo "install        - Checks dependencies are installed then runs the Nails installer."
     echo "migrate        - Checks dependencies are installed then runs the Nails Database Migration tool."
     echo "upgrade        - Updates all dependencies then runs the Nails installer."
+    echo "test           - Runs PHPUnit tests."
     echo "--version (-v) - Displays version information."
     echo ""
 fi
