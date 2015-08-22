@@ -198,6 +198,88 @@ then
         ./nails.php test
     fi
 
+elif [ "$1" == "dev" ]
+then
+
+    if [ "$2" == "pull" ]
+    then
+
+        if [ "$3" == "" ]
+        then
+            subdir="."
+        else
+            subdir="$3"
+        fi
+
+
+        # Fetch an uptodate list of Nails repositories, lopp through it
+        # and clone/pull as required then checkout develop branch
+        echo ""
+        echo ""
+        echo "UPDATING LIST OF REPOSITORIES"
+        echo "-----------------------------"
+        curl https://api.github.com/orgs/nailsapp/repos?page=1 > repos-page1.json
+        curl https://api.github.com/orgs/nailsapp/repos?page=2 > repos-page2.json
+
+        echo ""
+        echo ""
+        echo "UPDATING REPOSITORIES"
+        echo "---------------------"
+
+        parseJson()
+        {
+            # Work out the repo name, pulled from the JSON
+            grep "    \"name\": " $1 | while read -r line ; do
+
+                reponame=$(echo $line | cut -c 10-$(expr ${#line} - 2))
+
+                # Test if the .git directory exists
+                if [ -d "$subdir/$reponame/.git" ]; then
+
+                    cd "$curDir/$subdir/$reponame"
+
+                    echo "$reponame: Checking out develop branch"
+                    git checkout develop
+
+                    echo "$reponame: Pulling latest changes"
+                    git pull origin develop
+
+                    cd $curDir
+
+                else
+
+                    echo "$reponame: Cloning"
+                    git clone https://github.com/nailsapp/$reponame.git $subdir/$reponame > /dev/null 2>&1
+
+                    cd "$curDir/$subdir/$reponame"
+
+                    echo "$reponame: Checking out develop branch"
+                    git checkout develop
+
+                    cd $curDir
+                fi
+
+            done
+        }
+
+        # Run once per file
+        parseJson repos-page1.json
+        parseJson repos-page2.json
+
+    else
+
+        echo ""
+        echo "Please specify a command for dev."
+        echo ""
+        echo "You can use:"
+        echo ""
+        echo "pull - Clones/pulls all public repositories from the Nails GitHub organisation and"
+        echo "       checks out the develop branch. Optionally provide a third argument which is a subdirectory"
+        echo "       where repos should be updated or cloned into."
+        echo ""
+
+    fi
+
 elif [ "$1" == "--version" ] || [ "$1" == "-v" ]
 then
 
@@ -217,6 +299,7 @@ else
     echo "migrate        - Checks dependencies are installed then runs the Nails Database Migration tool."
     echo "upgrade        - Updates all dependencies then runs the Nails installer."
     echo "test           - Runs PHPUnit tests."
+    echo "dev            - Contains useful tools for Nails development."
     echo "--version (-v) - Displays version information."
     echo ""
 fi
