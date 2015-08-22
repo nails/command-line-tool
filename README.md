@@ -28,6 +28,8 @@ arguments to the tool:
 - `nails migrate` will check dependencies are installed then run the Nails Migration tool.
 - `nails upgrade` will update all dependencies to their latest version then run the Nails Migration tool.
 - `nails test` will run PHPUnit tests for the application.
+- `nails dev` Shows available dev tools.
+- `nails dev pull` Pull down all public Nails repositories from GitHub
 
 
 ## Prerequisites
