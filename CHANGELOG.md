@@ -1,6 +1,14 @@
 # Change Log
 
 
+## Version 0.5.0
+
+Released 22 August 2015
+
+- Added dev tools
+- `nails dev pull` will pull down/update all public Nails repositories from GitHub
+
+
 ## Version 0.4.2
 
 Released 28 April 2015
