@@ -144,24 +144,6 @@ then
 
         echo ""
         echo ""
-        echo "BOWER INSTALL"
-        echo "-------------"
-        bower install
-
-        echo ""
-        echo ""
-        echo "NPM INSTALL"
-        echo "-----------"
-        npm install
-
-        echo ""
-        echo ""
-        echo "GULP BUILD"
-        echo "----------"
-        gulp build
-
-        echo ""
-        echo ""
         echo "EXECUTING NAILS MIGRATION TOOL"
         echo "------------------------------"
         ./nails.php migrate
