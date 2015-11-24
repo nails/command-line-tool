@@ -1,6 +1,13 @@
 # Change Log
 
 
+## Version 0.6.0
+
+Released 24 November 2015
+
+- Added NPM and Grunt to install process
+
+
 ## Version 0.5.0
 
 Released 22 August 2015
