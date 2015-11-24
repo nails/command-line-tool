@@ -1,5 +1,5 @@
 curDir="$(pwd)"
-version="0.5.0"
+version="0.6.0"
 
 if [ "$1" == "new" ]
 then
@@ -34,6 +34,18 @@ then
         echo "BOWER UPDATE"
         echo "------------"
         bower update -S
+
+        echo ""
+        echo ""
+        echo "NPM INSTALL"
+        echo "-----------"
+        npm install
+
+        echo ""
+        echo ""
+        echo "GULP BUILD"
+        echo "----------"
+        gulp build
 
         echo ""
         echo ""
@@ -93,6 +105,18 @@ then
 
         echo ""
         echo ""
+        echo "NPM INSTALL"
+        echo "-----------"
+        npm install
+
+        echo ""
+        echo ""
+        echo "GULP BUILD"
+        echo "----------"
+        gulp build
+
+        echo ""
+        echo ""
         echo "EXECUTING NAILS INSTALLER"
         echo "-------------------------"
         ./nails.php install $2
@@ -117,12 +141,6 @@ then
         echo "COMPOSER INSTALL"
         echo "----------------"
         composer install
-
-        echo ""
-        echo ""
-        echo "BOWER INSTALL"
-        echo "-------------"
-        bower install
 
         echo ""
         echo ""
@@ -160,6 +178,18 @@ then
 
         echo ""
         echo ""
+        echo "NPM INSTALL"
+        echo "-----------"
+        npm install
+
+        echo ""
+        echo ""
+        echo "GULP BUILD"
+        echo "----------"
+        gulp build
+
+        echo ""
+        echo ""
         echo "EXECUTING NAILS INSTALLER"
         echo "------------------------------"
         ./nails.php migrate
@@ -193,6 +223,18 @@ then
 
         echo ""
         echo ""
+        echo "NPM INSTALL"
+        echo "-----------"
+        npm install
+
+        echo ""
+        echo ""
+        echo "GULP BUILD"
+        echo "----------"
+        gulp build
+
+        echo ""
+        echo ""
         echo "EXECUTING NAILS INSTALLER"
         echo "-------------------------"
         ./nails.php test
@@ -212,7 +254,7 @@ then
         fi
 
 
-        # Fetch an uptodate list of Nails repositories, lopp through it
+        # Fetch an uptodate list of Nails repositories, loop through it
         # and clone/pull as required then checkout develop branch
         echo ""
         echo ""
