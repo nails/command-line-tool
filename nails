@@ -4,7 +4,6 @@ consolePath="${curDir}/vendor/nailsapp/module-console/console.php"
 
 if [ ! -f $consolePath ]
     then
-    echo "Could not find console.php, falling back to nails.php"
     consolePath="${curDir}/nails.php"
 fi
 
