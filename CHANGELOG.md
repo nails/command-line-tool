@@ -1,6 +1,14 @@
 # Change Log
 
 
+## Version 0.7.0
+
+Released 2nd March 2016
+
+- Passing all arguments to the console application, except for a few which do a few things before hand.
+  Namely `new`, `install` and `upgrade`
+
+
 ## Version 0.6.1
 
 Released 2nd March 2016
