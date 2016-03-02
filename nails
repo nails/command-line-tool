@@ -1,6 +1,16 @@
 curDir="$(pwd)"
-version="0.6.0"
+version="0.6.1"
+consolePath="${curDir}/vendor/nailsapp/module-console/console.php"
 
+if [ ! -f $consolePath ]
+    then
+    echo "Could not find console.php, falling back to nails.php"
+    consolePath="${curDir}/nails.php"
+fi
+
+# ------------------
+# Creates a new Nails application.
+# ------------------
 if [ "$1" == "new" ]
 then
 
@@ -16,6 +26,9 @@ then
     # Directory empty?
     if find "$curDir" -maxdepth 0 -empty | read;
     then
+
+        # Reset the consolePath variable to the new style
+        consolePath="${curDir}/vendor/nailsapp/module-console/console.php"
 
         echo ""
         echo ""
@@ -51,23 +64,35 @@ then
         echo ""
         echo "EXECUTING NAILS INSTALLER"
         echo "-------------------------"
-        ./nails.php install
+        if [ ! -f $consolePath ]
+        then
 
-        echo ""
-        echo ""
-        echo "PREPARING REPOSITORY"
-        echo "--------------------"
-        rm -rf .git/ && rmdir .git
-        git flow init -d
-        git add .
-        git commit -m "Initial Commit"
+            echo ""
+            echo ""
+            echo "Not a Nails application or nailsapp/module-console is not installed."
+            echo ""
+            echo ""
 
-        echo ""
-        echo ""
-        echo "CLEANING UP"
-        echo "-----------"
-        echo "Complete!"
-        echo ""
+        else
+
+            php $consolePath install
+
+            echo ""
+            echo ""
+            echo "PREPARING REPOSITORY"
+            echo "--------------------"
+            rm -rf .git/ && rmdir .git
+            git flow init -d
+            git add .
+            git commit -m "Initial Commit"
+
+            echo ""
+            echo ""
+            echo "CLEANING UP"
+            echo "-----------"
+            echo "Complete!"
+            echo ""
+        fi
 
     else
 
@@ -77,15 +102,21 @@ then
 
     fi
 
+
+
+
+# ------------------
+# Installs (or reinstalls) an existing Nails application
+# ------------------
 elif [ "$1" == "install" ]
 then
 
-    if [ ! -f ./nails.php ]
+    if [ ! -f $consolePath ]
     then
 
         echo ""
         echo ""
-        echo "Not a Nails application."
+        echo "Not a Nails application or nailsapp/module-console is not installed."
         echo ""
         echo ""
 
@@ -119,18 +150,24 @@ then
         echo ""
         echo "EXECUTING NAILS INSTALLER"
         echo "-------------------------"
-        ./nails.php install $2
+        php $consolePath install $2
     fi
 
+
+
+
+# ------------------
+# Migrates the application's database
+# ------------------
 elif [ "$1" == "migrate" ]
 then
 
-    if [ ! -f ./nails.php ]
+    if [ ! -f $consolePath ]
     then
 
         echo ""
         echo ""
-        echo "Not a Nails application."
+        echo "Not a Nails application or nailsapp/module-console is not installed."
         echo ""
         echo ""
 
@@ -138,27 +175,27 @@ then
 
         echo ""
         echo ""
-        echo "COMPOSER INSTALL"
-        echo "----------------"
-        composer install
-
-        echo ""
-        echo ""
         echo "EXECUTING NAILS MIGRATION TOOL"
         echo "------------------------------"
-        ./nails.php migrate
+        php $consolePath migrate
 
     fi
 
+
+
+
+# ------------------
+# Upgrades the application and migrates the database
+# ------------------
 elif [ "$1" == "upgrade" ]
 then
 
-    if [ ! -f ./nails.php ]
+    if [ ! -f $consolePath ]
     then
 
         echo ""
         echo ""
-        echo "Not a Nails application."
+        echo "Not a Nails application or nailsapp/module-console is not installed."
         echo ""
         echo ""
 
@@ -190,20 +227,26 @@ then
 
         echo ""
         echo ""
-        echo "EXECUTING NAILS INSTALLER"
+        echo "EXECUTING NAILS MIGRATION TOOL"
         echo "------------------------------"
-        ./nails.php migrate
+        php $consolePath migrate
     fi
 
+
+
+
+# ------------------
+# Runs all the tests
+# ------------------
 elif [ "$1" == "test" ]
 then
 
-    if [ ! -f ./nails.php ]
+    if [ ! -f $consolePath ]
     then
 
         echo ""
         echo ""
-        echo "Not a Nails application."
+        echo "Not a Nails application or nailsapp/module-console is not installed."
         echo ""
         echo ""
 
@@ -211,35 +254,17 @@ then
 
         echo ""
         echo ""
-        echo "COMPOSER INSTALL"
-        echo "----------------"
-        composer install
-
-        echo ""
-        echo ""
-        echo "BOWER INSTALL"
-        echo "-------------"
-        bower install
-
-        echo ""
-        echo ""
-        echo "NPM INSTALL"
-        echo "-----------"
-        npm install
-
-        echo ""
-        echo ""
-        echo "GULP BUILD"
-        echo "----------"
-        gulp build
-
-        echo ""
-        echo ""
-        echo "EXECUTING NAILS INSTALLER"
-        echo "-------------------------"
-        ./nails.php test
+        echo "EXECUTING NAILS TESTING TOOL"
+        echo "----------------------------"
+        php $consolePath test
     fi
 
+
+
+
+# ------------------
+# Pulls a copy of all the Nails repos from GitHub (for development)
+# ------------------
 elif [ "$1" == "dev" ]
 then
 
@@ -322,6 +347,12 @@ then
 
     fi
 
+
+
+
+# ------------------
+# shows the version number
+# ------------------
 elif [ "$1" == "--version" ] || [ "$1" == "-v" ]
 then
 
@@ -329,6 +360,12 @@ then
     echo "Nails Command Line tool $version"
     echo ""
 
+
+
+
+# ------------------
+# Shows the tool's help
+# ------------------
 else
 
     echo ""
@@ -338,8 +375,8 @@ else
     echo ""
     echo "new            - Creates a new empty site and runs the Nails installer."
     echo "install        - Checks dependencies are installed then runs the Nails installer."
-    echo "migrate        - Checks dependencies are installed then runs the Nails Database Migration tool."
-    echo "upgrade        - Updates all dependencies then runs the Nails installer."
+    echo "migrate        - Runs the Nails Database Migration tool."
+    echo "upgrade        - Updates all dependencies then runs the Nails migration tool."
     echo "test           - Runs PHPUnit tests."
     echo "dev            - Contains useful tools for Nails development."
     echo "--version (-v) - Displays version information."
