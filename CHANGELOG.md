@@ -1,6 +1,14 @@
 # Change Log
 
 
+## Version 0.6.1
+
+Released 2nd March 2016
+
+- Using new console (but with fallback)
+- Executing the console via PHP binary
+- No longer doing the whole install process for migrations
+
 ## Version 0.6.0
 
 Released 24 November 2015
