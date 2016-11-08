@@ -1,5 +1,5 @@
 curDir="$(pwd)"
-version="0.7.0"
+version="0.8.0"
 consolePath="${curDir}/vendor/nailsapp/module-console/console.php"
 
 if [ ! -f $consolePath ]
