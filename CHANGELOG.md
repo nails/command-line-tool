@@ -1,6 +1,15 @@
 # Change Log
 
 
+## Version 0.8.0
+
+Released 8th November 2016
+
+- Downloading a zip instead of cloning the skeleton
+- Simplified install and migrate (removed composer stuff before hand)
+- Updated docs
+
+
 ## Version 0.7.0
 
 Released 2nd March 2016
