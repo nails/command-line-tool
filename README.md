@@ -24,12 +24,14 @@ arguments to the tool:
 
 - `nails new folderName` will clone the skeleton repository into `folderName`, install all the dependancies,
   run the Nails Installer and then prepare a new repository for the app.
-- `nails install` will check dependencies are installed then run the Nails Installer.
-- `nails migrate` will check dependencies are installed then run the Nails Migration tool.
 - `nails upgrade` will update all dependencies to their latest version then run the Nails Migration tool.
 - `nails test` will run PHPUnit tests for the application.
 - `nails dev` Shows available dev tools.
 - `nails dev pull` Pull down all public Nails repositories from GitHub
+
+The tool also wraps the bundled console application within Nails applications and makes them available as
+additional commands. to view all available commands for your app simply call `nails` with no arguments in
+the app's root directory.
 
 
 ## Prerequisites

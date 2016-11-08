@@ -1,5 +1,5 @@
 curDir="$(pwd)"
-version="0.7.0"
+version="0.8.0"
 consolePath="${curDir}/vendor/nailsapp/module-console/console.php"
 
 if [ ! -f $consolePath ]
@@ -33,7 +33,12 @@ if [ "$1" == "new" ]
         echo ""
         echo "GETTING NAILS SKELETON"
         echo "----------------------"
-        git clone https://github.com/nailsapp/skeleton-app.git .
+        curl -LOk https://github.com/nailsapp/skeleton-app/archive/master.zip
+        unzip -q master.zip
+        mv skeleton-app-master/* ./
+        mv skeleton-app-master/.* ./
+        rmdir skeleton-app-master
+
 
         echo ""
         echo ""
@@ -80,10 +85,7 @@ if [ "$1" == "new" ]
             echo ""
             echo "PREPARING REPOSITORY"
             echo "--------------------"
-            rm -rf .git/ && rmdir .git
             git flow init -d
-            git add .
-            git commit -m "Initial Commit"
 
             echo ""
             echo ""
@@ -103,60 +105,11 @@ if [ "$1" == "new" ]
 
 else
 
-    # ------------------
-    # Installs (or reinstalls) an existing Nails application
-    # ------------------
-    if [ "$1" == "install" ]
-        then
-
-        if [ ! -f $consolePath ]
-            then
-
-            echo ""
-            echo ""
-            echo "Not a Nails application or nailsapp/module-console is not installed."
-            echo ""
-            echo ""
-
-        else
-
-            echo ""
-            echo ""
-            echo "COMPOSER INSTALL"
-            echo "----------------"
-            composer install
-
-            echo ""
-            echo ""
-            echo "BOWER INSTALL"
-            echo "-------------"
-            bower install
-
-            echo ""
-            echo ""
-            echo "NPM INSTALL"
-            echo "-----------"
-            npm install
-
-            echo ""
-            echo ""
-            echo "GULP BUILD"
-            echo "----------"
-            gulp build
-
-            echo ""
-            echo ""
-            echo "EXECUTING NAILS INSTALLER"
-            echo "-------------------------"
-            php $consolePath install $2
-        fi
-
-
 
     # ------------------
     # Upgrades the application and migrates the database
     # ------------------
-    elif [ "$1" == "upgrade" ]
+    if [ "$1" == "upgrade" ]
         then
 
         if [ ! -f $consolePath ]
@@ -200,7 +153,6 @@ else
             echo "------------------------------"
             php $consolePath migrate
         fi
-
 
 
     # ------------------
@@ -308,7 +260,6 @@ else
         echo "This tool wraps the bundled console application. In addition it provides the following commands:"
         echo ""
         echo "new            - Creates a new empty Nails site and runs the Nails installer."
-        echo "install        - Checks dependencies are installed then runs the Nails installer."
         echo "upgrade        - Updates all dependencies then runs the Nails migration tool."
         echo "dev            - Contains useful tools for Nails development."
         echo "help           - Shows this help text."
