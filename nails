@@ -37,6 +37,7 @@ if [ "$1" == "new" ]
         unzip -q master.zip
         mv skeleton-app-master/* ./
         mv skeleton-app-master/.* ./
+        rm -f master.zip
         rmdir skeleton-app-master
 
 
