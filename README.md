@@ -1,5 +1,7 @@
 # Command Line tool for Nails
 
+[![Join the chat on Slack!](https://now-examples-slackin-rayibnpwqe.now.sh/badge.svg)](https://nails-app.slack.com/shared_invite/MTg1NDcyNjI0ODcxLTE0OTUwMzA1NTYtYTZhZjc5YjExMQ)
+
 This is the command line tool for Nails. It is an installable executeable which makes it easy to create new
 Nails apps, install (or reinstall) them, or to migrate databases.
 
