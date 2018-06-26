@@ -1,6 +1,14 @@
+#!/bin/bash
+
 curDir="$(pwd)"
-version="0.8.1"
+version="0.9.0"
 consolePath="${curDir}/vendor/nailsapp/module-console/console.php"
+
+TITLE='\033[0;32m'
+COMMENT='\033[0;33m'
+BOLD_COMMENT='\033[1m'
+ERROR='\033[31m'
+NC='\033[0m'
 
 if [ ! -f "$consolePath" ]
     then
@@ -118,7 +126,7 @@ else
 
             echo ""
             echo ""
-            echo "Not a Nails application or nailsapp/module-console is not installed."
+            echo -e "${ERROR}Not a Nails application or nailsapp/module-console is not installed.${NC}"
             echo ""
             echo ""
 
@@ -177,47 +185,61 @@ else
             # and clone/pull as required then checkout develop branch
             echo ""
             echo ""
-            echo "UPDATING LIST OF REPOSITORIES"
+            echo -e "${TITLE}UPDATING LIST OF REPOSITORIES${NC}"
             echo "-----------------------------"
             curl https://api.github.com/orgs/nailsapp/repos?page=1 > repos-page1.json
             curl https://api.github.com/orgs/nailsapp/repos?page=2 > repos-page2.json
+            curl https://api.github.com/orgs/nailsapp/repos?page=3 > repos-page3.json
 
             echo ""
             echo ""
-            echo "UPDATING REPOSITORIES"
+            echo -e "${TITLE}UPDATING REPOSITORIES${NC}"
             echo "---------------------"
 
             parseJson()
             {
-                # Work out the repo name, pulled from the JSON
-                grep "    \"name\": " $1 | while read -r line ; do
+                jq -rc ".[]" $1 | while read -r json ; do
 
-                    reponame=$(echo $line | cut -c 10-$(expr ${#line} - 2))
+                    NAME=$(echo $json | jq -r ".name");
+                    ARCHIVED=$(echo $json | jq -r ".archived")
 
-                    # Test if the .git directory exists
-                    if [ -d "$subdir/$reponame/.git" ]; then
+                    echo ""
+                    echo -e "[ ${COMMENT}nailsapp/$NAME${NC} ]"
+                    echo "------------------------------------"
 
-                        cd "$curDir/$subdir/$reponame"
+                    if [ "$ARCHIVED" == "false" ]; then
 
-                        echo "$reponame: Checking out develop branch"
-                        git checkout develop
+                        # Test if the .git directory exists
+                        if [ -d "$subdir/$NAME/.git" ]; then
 
-                        echo "$reponame: Pulling latest changes"
-                        git pull origin develop
+                            cd "$curDir/$subdir/$NAME"
 
-                        cd "$curDir"
+                            echo -e "${BOLD_COMMENT}Checking out develop branch${NC}"
+                            git checkout develop
+
+                            echo -e "${BOLD_COMMENT}Pulling latest changes${NC}"
+                            git pull origin develop
+
+                            cd $curDir
+
+                        else
+
+                            echo -e "${BOLD_COMMENT}Cloning${NC}"
+                            git clone https://github.com/nailsapp/$NAME.git $subdir/$NAME > /dev/null 2>&1
+
+                            cd "$curDir/$subdir/$NAME"
+
+                            echo -e "${BOLD_COMMENT}Checking out develop branch${NC}"
+                            git checkout develop
+
+                            #cd $curDir
+                        fi
 
                     else
-
-                        echo "$reponame: Cloning"
-                        git clone https://github.com/nailsapp/$reponame.git $subdir/$reponame > /dev/null 2>&1
-
-                        cd "$curDir/$subdir/$reponame"
-
-                        echo "$reponame: Checking out develop branch"
-                        git checkout develop
-
-                        cd "$curDir"
+                        if [ -d "$subdir/$NAME" ]; then
+                            echo -e "${ERROR}Removing archived repository${NC}"
+                            rm -rf "$subdir/$NAME"
+                        fi
                     fi
 
                 done
@@ -226,6 +248,7 @@ else
             # Run once per file
             parseJson repos-page1.json
             parseJson repos-page2.json
+            parseJson repos-page3.json
 
         else
 
@@ -248,7 +271,7 @@ else
     elif [ "$1" == "--version" ] || [ "$1" == "-v" ]
         then
         echo ""
-        echo "Nails Command Line tool $version"
+        echo -e "Nails Command Line tool ${COMMENT}$version${NC}"
         echo ""
 
 
@@ -260,11 +283,11 @@ else
         echo ""
         echo "This tool wraps the bundled console application. In addition it provides the following commands:"
         echo ""
-        echo "new            - Creates a new empty Nails site and runs the Nails installer."
-        echo "upgrade        - Updates all dependencies then runs the Nails migration tool."
-        echo "dev            - Contains useful tools for Nails development."
-        echo "help           - Shows this help text."
-        echo "--version (-v) - Displays version information for this tool."
+        echo -e "${COMMENT}new${NC}            - Creates a new empty Nails site and runs the Nails installer."
+        echo -e "${COMMENT}upgrade${NC}        - Updates all dependencies then runs the Nails migration tool."
+        echo -e "${COMMENT}dev${NC}            - Contains useful tools for Nails development."
+        echo -e "${COMMENT}help${NC}           - Shows this help text."
+        echo -e "${COMMENT}--version (-v)${NC} - Displays version information for this tool."
         echo ""
 
 
@@ -278,7 +301,7 @@ else
 
             echo ""
             echo ""
-            echo "Not a Nails application or nailsapp/module-console is not installed."
+            echo -e "${ERROR}Not a Nails application or nailsapp/module-console is not installed.${NC}"
             echo ""
             echo ""
 
