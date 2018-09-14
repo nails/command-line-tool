@@ -1,7 +1,7 @@
 #!/bin/bash
 
 curDir="$(pwd)"
-version="0.10.2"
+version="0.10.3"
 consolePath="${curDir}/vendor/nails/module-console/console.php"
 
 TITLE='\033[0;32m'
@@ -24,7 +24,6 @@ if [ "$1" == "new" ]
     # Do we have a folder name?
     if [ "$2" != "" ]
         then
-
         mkdir "$2"
         cd "$2"
         curDir="$(pwd)"
@@ -49,125 +48,39 @@ if [ "$1" == "new" ]
         rmdir skeleton-app-master
 
 
-        echo ""
-        echo ""
-        echo "COMPOSER UPDATE"
-        echo "---------------"
-        composer update
-
-        echo ""
-        echo ""
-        echo "BOWER UPDATE"
-        echo "------------"
-        bower update -S
-
-        echo ""
-        echo ""
-        echo "NPM INSTALL"
-        echo "-----------"
-        npm install
-
-        echo ""
-        echo ""
-        echo "GULP BUILD"
-        echo "----------"
-        gulp build
-
-        echo ""
-        echo ""
-        echo "EXECUTING NAILS INSTALLER"
-        echo "-------------------------"
-        if [ ! -f "$consolePath" ]
-        then
-
+        if [ ! -f "./build.sh" ]
             echo ""
             echo ""
-            echo "Not a Nails application or nails/module-console is not installed."
-            echo ""
-            echo ""
-
-        else
-
-            php "$consolePath" install
-
-            echo ""
-            echo ""
-            echo "PREPARING REPOSITORY"
-            echo "--------------------"
-            git flow init -d
-
-            echo ""
-            echo ""
-            echo "CLEANING UP"
-            echo "-----------"
-            echo "Complete!"
-            echo ""
+            echo "BUILD"
+            echo "---------------"
+            ./build.sh
         fi
 
-    else
+        echo ""
+        echo ""
+        echo "PREPARING REPOSITORY"
+        echo "--------------------"
+        git flow init -d
 
+        echo ""
+        echo ""
+        echo "CLEANING UP"
+        echo "-----------"
+        echo "Complete!"
+        echo ""
+
+    else
         echo ""
         echo "Directory is not empty!"
         echo ""
-
     fi
 
 else
 
-
-    # ------------------
-    # Upgrades the application and migrates the database
-    # ------------------
-    if [ "$1" == "upgrade" ]
-        then
-
-        if [ ! -f "$consolePath" ]
-            then
-
-            echo ""
-            echo ""
-            echo -e "${ERROR}Not a Nails application or nails/module-console is not installed.${NC}"
-            echo ""
-            echo ""
-
-        else
-
-            echo ""
-            echo ""
-            echo "COMPOSER UPDATE"
-            echo "---------------"
-            composer update
-
-            echo ""
-            echo ""
-            echo "BOWER UPDATE"
-            echo "------------"
-            bower update -S
-
-            echo ""
-            echo ""
-            echo "NPM INSTALL"
-            echo "-----------"
-            npm install
-
-            echo ""
-            echo ""
-            echo "GULP BUILD"
-            echo "----------"
-            gulp build
-
-            echo ""
-            echo ""
-            echo "EXECUTING NAILS MIGRATION TOOL"
-            echo "------------------------------"
-            php "$consolePath" migrate
-        fi
-
-
     # ------------------
     # Pulls a copy of all the Nails repos from GitHub (for development)
     # ------------------
-    elif [ "$1" == "dev" ]
+    if [ "$1" == "dev" ]
         then
 
         if [ "$2" == "pull" ]
@@ -179,7 +92,6 @@ else
             else
                 subdir="$3"
             fi
-
 
             # Fetch an uptodate list of Nails repositories, loop through it
             # and clone/pull as required then checkout develop branch
@@ -203,16 +115,16 @@ else
                     NAME=$(echo $json | jq -r ".name");
                     ARCHIVED=$(echo $json | jq -r ".archived")
 
-                    echo ""
-                    echo -e "[ ${COMMENT}nails/$NAME${NC} ]"
-                    echo "------------------------------------"
-
                     if [ "$ARCHIVED" == "false" ]; then
+
+                        echo ""
+                        echo -e "[ ${COMMENT}nails/$NAME${NC} ]"
+                        echo "------------------------------------"
 
                         # Test if the .git directory exists
                         if [ -d "$subdir/$NAME/.git" ]; then
 
-                            cd "$curDir/$subdir/$NAME"
+                            cd "$subdir/$NAME"
 
                             echo -e "${BOLD_COMMENT}Checking out develop branch${NC}"
                             git checkout develop
@@ -220,23 +132,24 @@ else
                             echo -e "${BOLD_COMMENT}Pulling latest changes${NC}"
                             git pull origin develop
 
-                            cd $curDir
-
                         else
 
                             echo -e "${BOLD_COMMENT}Cloning${NC}"
-                            git clone https://github.com/nails/$NAME.git $subdir/$NAME > /dev/null 2>&1
+                            git clone https://github.com/nails/$NAME.git "$subdir/$NAME" > /dev/null 2>&1
 
-                            cd "$curDir/$subdir/$NAME"
+                            cd "$subdir/$NAME"
 
                             echo -e "${BOLD_COMMENT}Checking out develop branch${NC}"
                             git checkout develop
-
-                            #cd $curDir
                         fi
+
+                        cd $curDir
 
                     else
                         if [ -d "$subdir/$NAME" ]; then
+                            echo ""
+                            echo -e "[ ${COMMENT}nails/$NAME${NC} ]"
+                            echo "------------------------------------"
                             echo -e "${ERROR}Removing archived repository${NC}"
                             rm -rf "$subdir/$NAME"
                         fi
@@ -251,7 +164,6 @@ else
             parseJson repos-page3.json
 
         else
-
             echo ""
             echo "Please specify a command for dev."
             echo ""
@@ -261,9 +173,7 @@ else
             echo "       checks out the develop branch. Optionally provide a third argument which is a subdirectory"
             echo "       where repos should be updated or cloned into."
             echo ""
-
         fi
-
 
     # ------------------
     # shows the version number
@@ -274,7 +184,6 @@ else
         echo -e "Nails Command Line tool ${COMMENT}$version${NC}"
         echo ""
 
-
     # ------------------
     # Shows the tool's help
     # ------------------
@@ -283,19 +192,16 @@ else
         echo ""
         echo "This tool wraps the bundled console application. In addition it provides the following commands:"
         echo ""
-        echo -e "${COMMENT}new${NC}            - Creates a new empty Nails site and runs the Nails installer."
-        echo -e "${COMMENT}upgrade${NC}        - Updates all dependencies then runs the Nails migration tool."
+        echo -e "${COMMENT}new${NC}            - Creates a new empty Nails site and builds it."
         echo -e "${COMMENT}dev${NC}            - Contains useful tools for Nails development."
         echo -e "${COMMENT}help${NC}           - Shows this help text."
         echo -e "${COMMENT}--version (-v)${NC} - Displays version information for this tool."
         echo ""
 
-
     # ------------------
     # Calls the console application, passing all parameters
     # ------------------
     else
-
         if [ ! -f "$consolePath" ]
             then
 
@@ -306,7 +212,6 @@ else
             echo ""
 
         else
-
             php "$consolePath" "$@"
         fi
     fi
