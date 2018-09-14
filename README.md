@@ -8,7 +8,7 @@ Nails apps, install (or reinstall) them, or to migrate databases.
 ## Installation:
 
 ### Using Homebrew
-1. Tap Nails using `brew tap nails/nails`
+1. Tap Nails using `brew tap nails/utilities`
 2. Install using `brew install nails`
 3. Update as normal using `brew update && brew upgrade`
 
