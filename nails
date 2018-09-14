@@ -2,7 +2,7 @@
 
 curDir="$(pwd)"
 version="0.9.0"
-consolePath="${curDir}/vendor/nailsapp/module-console/console.php"
+consolePath="${curDir}/vendor/nails/module-console/console.php"
 
 TITLE='\033[0;32m'
 COMMENT='\033[0;33m'
@@ -35,13 +35,13 @@ if [ "$1" == "new" ]
         then
 
         # Reset the consolePath variable to the new style
-        consolePath="${curDir}/vendor/nailsapp/module-console/console.php"
+        consolePath="${curDir}/vendor/nails/module-console/console.php"
 
         echo ""
         echo ""
         echo "GETTING NAILS SKELETON"
         echo "----------------------"
-        curl -LOk https://github.com/nailsapp/skeleton-app/archive/master.zip
+        curl -LOk https://github.com/nails/skeleton-app/archive/master.zip
         unzip -q master.zip
         mv skeleton-app-master/* ./
         mv skeleton-app-master/.* ./
@@ -82,7 +82,7 @@ if [ "$1" == "new" ]
 
             echo ""
             echo ""
-            echo "Not a Nails application or nailsapp/module-console is not installed."
+            echo "Not a Nails application or nails/module-console is not installed."
             echo ""
             echo ""
 
@@ -126,7 +126,7 @@ else
 
             echo ""
             echo ""
-            echo -e "${ERROR}Not a Nails application or nailsapp/module-console is not installed.${NC}"
+            echo -e "${ERROR}Not a Nails application or nails/module-console is not installed.${NC}"
             echo ""
             echo ""
 
@@ -187,9 +187,9 @@ else
             echo ""
             echo -e "${TITLE}UPDATING LIST OF REPOSITORIES${NC}"
             echo "-----------------------------"
-            curl https://api.github.com/orgs/nailsapp/repos?page=1 > repos-page1.json
-            curl https://api.github.com/orgs/nailsapp/repos?page=2 > repos-page2.json
-            curl https://api.github.com/orgs/nailsapp/repos?page=3 > repos-page3.json
+            curl https://api.github.com/orgs/nails/repos?page=1 > repos-page1.json
+            curl https://api.github.com/orgs/nails/repos?page=2 > repos-page2.json
+            curl https://api.github.com/orgs/nails/repos?page=3 > repos-page3.json
 
             echo ""
             echo ""
@@ -204,7 +204,7 @@ else
                     ARCHIVED=$(echo $json | jq -r ".archived")
 
                     echo ""
-                    echo -e "[ ${COMMENT}nailsapp/$NAME${NC} ]"
+                    echo -e "[ ${COMMENT}nails/$NAME${NC} ]"
                     echo "------------------------------------"
 
                     if [ "$ARCHIVED" == "false" ]; then
@@ -225,7 +225,7 @@ else
                         else
 
                             echo -e "${BOLD_COMMENT}Cloning${NC}"
-                            git clone https://github.com/nailsapp/$NAME.git $subdir/$NAME > /dev/null 2>&1
+                            git clone https://github.com/nails/$NAME.git $subdir/$NAME > /dev/null 2>&1
 
                             cd "$curDir/$subdir/$NAME"
 
@@ -301,7 +301,7 @@ else
 
             echo ""
             echo ""
-            echo -e "${ERROR}Not a Nails application or nailsapp/module-console is not installed.${NC}"
+            echo -e "${ERROR}Not a Nails application or nails/module-console is not installed.${NC}"
             echo ""
             echo ""
 
