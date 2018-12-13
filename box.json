@@ -6,6 +6,7 @@
         "src",
         "vendor"
     ],
+    "exclude-composer-files": false,
     "files": [
         "composer.json"
     ]
