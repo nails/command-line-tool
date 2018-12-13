@@ -25,3 +25,21 @@ composer require -g nails/command-line-tool
 1. Clone this repository
 2. Create a symlink of the executable at `dist/nails`
 3. Place the symlink somewhere in your `$PATH`
+
+
+## Usage
+
+```bash
+# Create a new Nails project in the active directory
+nails new 
+
+# Create a new Nails project in another directory
+nails new --dir=~/my-project
+
+# Clone all active official Nails repositories to the active directory – this is useful for contributing 
+nails dev:pull
+```
+
+Execute `nails --help` for further information
+
+If `nails` is called in a folder which contains a Nails installation then it will proxy the app's console. To view all available commands for your app simply call `nails` with no arguments in the app's root directory.
