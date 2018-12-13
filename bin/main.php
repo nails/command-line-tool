@@ -15,21 +15,6 @@ define('BASEPATH', Directory::normalize(__DIR__ . '/../'));
 
 // --------------------------------------------------------------------------
 
-if (Updates::check()) {
-    define('NAILS_CLI_UPDATE_AVAILABLE', true);
-}
-
-// --------------------------------------------------------------------------
-
-$sConsolePath = Directory::normalize(getcwd() . '/vendor/nails/module-console/console.php');
-if (file_exists($sConsolePath)) {
-    \Phar::mount('phar://app', Directory::normalize(getcwd()));
-    require_once '/app/vendor/nails/module-console/console.php';
-    exit;
-}
-
-// --------------------------------------------------------------------------
-
 $oApp    = new Application();
 $oFinder = new Finder();
 
