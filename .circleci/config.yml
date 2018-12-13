@@ -38,6 +38,6 @@ jobs:
       - run: ./vendor/bin/phpunit
 
       # Build
-      - run: brew tap humbug/box && brew install box
-      - run: composer --no-interaction --optimize-autoloader --no-dev install
-      - run: box compile
+      - run: curl -L https://github.com/humbug/box/releases/download/3.4.0/box.phar --output box
+      - run: chmod +x ./box
+      - run: ./box compile
