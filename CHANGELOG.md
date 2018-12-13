@@ -1,6 +1,13 @@
 # Change Log
 
 
+## Version 1.0.0
+
+Released 13th December 2018
+
+- Rebuilt from the ground-up using PHP and releasing as a Phar
+
+
 ## Version 0.8.0
 
 Released 8th November 2016
