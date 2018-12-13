@@ -1,6 +1,6 @@
 {
     "main": "bin/main.php",
-    "output": "dist/nails",
+    "output": "dist/nails-cli",
     "chmod": "0755",
     "directories": [
         "src",
