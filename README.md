@@ -1,43 +1,45 @@
 # Command Line tool for Nails
 
+![license](https://img.shields.io/badge/license-MIT-green.svg)
+[![CircleCI branch](https://img.shields.io/circleci/project/github/nails/command-line-tool.svg)](https://circleci.com/gh/nails/command-line-tool)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nails/command-line-tool/badges/quality-score.png)](https://scrutinizer-ci.com/g/nails/command-line-tool)
 [![Join the chat on Slack!](https://now-examples-slackin-rayibnpwqe.now.sh/badge.svg)](https://nails-app.slack.com/shared_invite/MTg1NDcyNjI0ODcxLTE0OTUwMzA1NTYtYTZhZjc5YjExMQ)
 
-This is the command line tool for Nails. It is an installable executeable which makes it easy to create new
-Nails apps, install (or reinstall) them, or to migrate databases.
+The command line tool for Nails makes creating new projects easy, and provides a simple interface to the installed console module.
 
 ## Installation:
 
 ### Using Homebrew
-1. Tap Nails using `brew tap nails/utilities`
-2. Install using `brew install nails`
-3. Update as normal using `brew update && brew upgrade`
+```bash
+brew tap nails/utilities
+brew install nails
+```
+
+### Using Composer
+```bash
+composer require -g nails/command-line-tool
+```
 
 ### Manually
 
 1. Clone this repository
-2. Create a symlink of the executable
-3. Place the symlink somewhere in your PATH
-4. To update, simply `git pull origin master`
+2. Create a symlink of the executable at `dist/nails`
+3. Place the symlink somewhere in your `$PATH`
+
 
 ## Usage
 
-You have a new binary (well, technically a shell script) called `nails`. You can pass one of the following
-arguments to the tool:
+```bash
+# Create a new Nails project in the active directory
+nails new 
 
-- `nails new folderName` will clone the skeleton repository into `folderName`, install all the dependancies,
-  run the Nails Installer and then prepare a new repository for the app.
-- `nails upgrade` will update all dependencies to their latest version then run the Nails Migration tool.
-- `nails test` will run PHPUnit tests for the application.
-- `nails dev` Shows available dev tools.
-- `nails dev pull` Pull down all public Nails repositories from GitHub
+# Create a new Nails project in another directory
+nails new --dir=~/my-project
 
-The tool also wraps the bundled console application within Nails applications and makes them available as
-additional commands. to view all available commands for your app simply call `nails` with no arguments in
-the app's root directory.
+# Clone all active official Nails repositories to the active directory – this is useful for contributing 
+nails dev:pull
+```
 
+Execute `nails --help` for further information
 
-## Prerequisites
-- Composer is installed
-- Bower is installed
-- Git is installed
-- Git flow extension is installed
+If `nails` is called in a folder which contains a Nails installation then it will proxy the app's console. To view all available commands for your app simply call `nails` with no arguments in the app's root directory.
