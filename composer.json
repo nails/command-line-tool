@@ -1,0 +1,35 @@
+{
+    "name": "nails/command-line-tool",
+    "keywords": [
+        "Nails",
+        "Shed Collective",
+        "CodeIgniter"
+    ],
+    "homepage": "http://nailsapp.co.uk",
+    "description": "The command line tool for Nails makes creating new projects easy, and provides a simple interface to the installed console module.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Pablo de la Peña",
+            "email": "p@nailsapp.co.uk"
+        }
+    ],
+    "support": {
+        "email": "hello@nailsapp.co.uk"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "symfony/console": "4.*",
+        "symfony/finder": "4.*"
+    },
+    "require-dev": {
+        "humbug/box": "3.*",
+        "phpunit/phpunit": "7.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Nails\\Cli\\": "src/"
+        }
+    }
+}

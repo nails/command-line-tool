@@ -1,5 +1,6 @@
-# OS Trash
 .DS_Store
+.idea/
+dist/*
+!dist/.gitkeep
+/vendor/
 
-# Cache files
-repos-page*.json

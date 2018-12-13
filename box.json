@@ -1,0 +1,12 @@
+{
+    "main": "bin/main.php",
+    "output": "dist/nails",
+    "chmod": "0755",
+    "directories": [
+        "src",
+        "vendor"
+    ],
+    "files": [
+        "composer.json"
+    ]
+}
