@@ -25,7 +25,6 @@
         "symfony/finder": "4.*"
     },
     "require-dev": {
-        "humbug/box": "3.*",
         "phpunit/phpunit": "7.*"
     },
     "autoload": {
