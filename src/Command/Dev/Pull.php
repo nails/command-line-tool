@@ -5,11 +5,14 @@ namespace Nails\Cli\Command\Dev;
 use Nails\Cli\Command\Base;
 use Nails\Cli\Entities\Repository;
 use Nails\Cli\Exceptions\Repository\CreateException;
+use Nails\Cli\Exceptions\Repository\DeleteException;
 use Nails\Cli\Exceptions\Repository\FetchException;
 use Nails\Cli\Exceptions\Repository\UpdateException;
 use Nails\Cli\Exceptions\RepositoryException;
+use Nails\Cli\Exceptions\System\CommandFailedException;
 use Nails\Cli\Helper\Curl;
 use Nails\Cli\Helper\Directory;
+use Nails\Cli\Helper\System;
 
 final class Pull extends Base
 {
@@ -63,15 +66,15 @@ final class Pull extends Base
                     } elseif ($this->repositoryExists($oRepository) && !$oRepository->archived) {
 
                         $this->repositoryUpdate($oRepository);
-                        $this->oOutput->writeln('<comment>updated</comment>');
+                        $this->oOutput->writeln('<info>updated</info>');
 
                     } elseif (!$oRepository->archived) {
 
                         $this->repositoryCreate($oRepository);
-                        $this->oOutput->writeln('<comment>created</comment>');
+                        $this->oOutput->writeln('<info>created</info>');
 
                     } else {
-                        $this->oOutput->writeln('<comment>Archived</comment>');
+                        $this->oOutput->writeln('<info>Archived</info>');
                     }
 
                 } catch (RepositoryException $e) {
@@ -141,8 +144,7 @@ final class Pull extends Base
      */
     private function repositoryExists(Repository $oRepository)
     {
-        //  @todo (Pablo - 2018-12-13) - USE ->name once finished
-        $sPath = getcwd() . Directory::normalize('/' . $oRepository->full_name);
+        $sPath = $this->getRepositoryPath($oRepository);
         return is_dir($sPath);
     }
 
@@ -155,16 +157,11 @@ final class Pull extends Base
      */
     private function repositoryDelete(Repository $oRepository)
     {
-        $sPath     = $this->getRepositoryPath($oRepository);
-        $aCommands = [
-            'rm -rf "' . $sPath . '"',
-        ];
-        $sCommand  = implode(' && ', $aCommands);
-
-        exec($sCommand, $sOutput, $iReturn);
-
-        if ($iReturn !== 0) {
-            throw new UpdateException('Failed to create repository');
+        try {
+            $sPath = $this->getRepositoryPath($oRepository);
+            System::exec('rm -rf "' . $sPath . '"');
+        } catch (CommandFailedException $e) {
+            throw new DeleteException('Failed to create repository: ' . $e->getMessage());
         }
     }
 
@@ -177,18 +174,15 @@ final class Pull extends Base
      */
     private function repositoryUpdate(Repository $oRepository)
     {
-        $sPath     = $this->getRepositoryPath($oRepository);
-        $aCommands = [
-            'cd "' . $sPath . '"',
-            'git checkout develop 2>&1',
-            'git pull origin master 2>&1',
-        ];
-        $sCommand  = implode(' && ', $aCommands);
-
-        exec($sCommand, $sOutput, $iReturn);
-
-        if ($iReturn !== 0) {
-            throw new UpdateException('Failed to create repository');
+        try {
+            $sPath = $this->getRepositoryPath($oRepository);
+            System::exec([
+                'cd "' . $sPath . '"',
+                'git checkout develop 2>&1',
+                'git pull origin master 2>&1',
+            ]);
+        } catch (CommandFailedException $e) {
+            throw new UpdateException('Failed to create repository: ' . $e->getMessage());
         }
     }
 
@@ -201,18 +195,15 @@ final class Pull extends Base
      */
     private function repositoryCreate(Repository $oRepository)
     {
-        $sPath     = $this->getRepositoryPath($oRepository);
-        $aCommands = [
-            'mkdir -p "' . $sPath . '"',
-            'cd "' . $sPath . '"',
-            'git clone ' . $oRepository->ssh_url . ' . 2>&1',
-        ];
-        $sCommand  = implode(' && ', $aCommands);
-
-        exec($sCommand, $sOutput, $iReturn);
-
-        if ($iReturn !== 0) {
-            throw new CreateException('Failed to create repository: ' . trim($sOutput));
+        try {
+            $sPath = $this->getRepositoryPath($oRepository);
+            System::exec([
+                'mkdir -p "' . $sPath . '"',
+                'cd "' . $sPath . '"',
+                'git clone ' . $oRepository->ssh_url . ' . 2>&1',
+            ]);
+        } catch (CommandFailedException $e) {
+            throw new CreateException('Failed to create repository: ' . $e->getMessage());
         }
     }
 
@@ -227,7 +218,6 @@ final class Pull extends Base
      */
     private function getRepositoryPath(Repository $oRepository)
     {
-        //  @todo (Pablo - 2018-12-13) - USE ->name once finished
-        return getcwd() . Directory::normalize('/' . $oRepository->full_name);
+        return getcwd() . Directory::normalize('/' . $oRepository->name);
     }
 }

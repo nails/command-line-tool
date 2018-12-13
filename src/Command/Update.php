@@ -24,7 +24,7 @@ final class Update extends Base
      */
     protected function go()
     {
-        return '1.0.1';
+        $this->banner('Update');
         //  @todo (Pablo - 2018-12-13) - Check for updates, update as necessary
     }
 }

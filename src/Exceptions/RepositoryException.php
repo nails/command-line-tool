@@ -2,6 +2,6 @@
 
 namespace Nails\Cli\Exceptions;
 
-class RepositoryException extends \RuntimeException
+class RepositoryException extends CliException
 {
 }

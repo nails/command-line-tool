@@ -81,6 +81,7 @@ abstract class Base extends Command
      */
     protected function banner($sTitle)
     {
+        $sTitle = $sTitle ? 'Nails CLI: ' . $sTitle : 'Nails CLI';
         $this->oOutput->writeln('');
         $this->oOutput->writeln('<info>' . $sTitle . '</info>');
         $this->oOutput->writeln('<info>' . str_repeat('-', strlen($sTitle)) . '</info>');

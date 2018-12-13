@@ -4,6 +4,11 @@ namespace Nails\Cli\Entities;
 
 final class Repository
 {
+    /**
+     * The repository object
+     *
+     * @var \stdClass
+     */
     private $oRepository;
 
     // --------------------------------------------------------------------------
@@ -11,9 +16,9 @@ final class Repository
     /**
      * Repository constructor.
      *
-     * @param \stdClass|null $oRepository
+     * @param \stdClass $oRepository
      */
-    public function __construct(\stdClass $oRepository = null)
+    public function __construct(\stdClass $oRepository)
     {
         $this->oRepository = $oRepository;
     }

@@ -2,8 +2,6 @@
 
 namespace Nails\Cli\Helper;
 
-use Nails\Cli\Command\Dev\Pull;
-
 final class Updates
 {
     private static $sCurrentVersion;

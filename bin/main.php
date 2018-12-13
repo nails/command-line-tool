@@ -23,7 +23,9 @@ if (Updates::check()) {
 
 $sConsolePath = Directory::normalize(getcwd() . '/vendor/nails/module-console/console.php');
 if (file_exists($sConsolePath)) {
-    return $sConsolePath;
+    \Phar::mount('phar://app', Directory::normalize(getcwd()));
+    require_once '/app/vendor/nails/module-console/console.php';
+    exit;
 }
 
 // --------------------------------------------------------------------------
