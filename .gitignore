@@ -1,5 +1,4 @@
-# OS Trash
 .DS_Store
+.idea/
+/vendor/
 
-# Cache files
-repos-page*.json
