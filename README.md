@@ -17,7 +17,7 @@ brew install nails
 
 ### Using Composer
 ```bash
-composer require -g nails/command-line-tool
+composer global require nails/command-line-tool
 ```
 
 ### Manually
