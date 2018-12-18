@@ -23,8 +23,7 @@ composer global require nails/command-line-tool
 ### Manually
 
 1. Clone this repository
-2. Create a symlink of the executable at `dist/nails`
-3. Place the symlink somewhere in your `$PATH`
+2. Add `dist` to your `$PATH`
 
 
 ## Usage
