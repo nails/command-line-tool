@@ -152,7 +152,7 @@ final class Create extends Base
         $oFinder = new Finder();
         $oFinder->name('*.sh');
         foreach ($oFinder->in($sDir) as $oFile) {
-            System::exec('chmod +x "' . $oFile->getPath() . '/' . $oFile->getFilename() . '"');
+            System::exec('chmod +x "' . $oFile->getPath() . '/' . $oFile->getFileName() . '"');
         }
         $this->oOutput->writeln('<info>done</info>');
 
