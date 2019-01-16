@@ -40,6 +40,8 @@ final class Create extends Base
             ->setDescription('Create a new project')
             ->setHelp('This command will create a new Nails project.')
             ->addOption('dir', 'd', InputOption::VALUE_OPTIONAL, 'Where to install, defaults to current working directory')
+            ->addOption('app-skeleton', null, InputOption::VALUE_OPTIONAL, 'The URL of the app skeleton to use')
+            ->addOption('docker-skeleton', null, InputOption::VALUE_OPTIONAL, 'The URL of the Docker skeleton to use')
             ->addOption('no-docker', null, InputOption::VALUE_NONE, 'Do not install the Docker environment');
     }
 
@@ -88,7 +90,8 @@ final class Create extends Base
      */
     private function installWithoutDocker($sDir)
     {
-        $this->install($sDir, static::APP_SKELETON, 'skeleton-app-master');
+        $sAppSkeleton = $this->oInput->getOption('app-skeleton') ?: static::APP_SKELETON;
+        $this->install($sDir, $sAppSkeleton, 'skeleton-app-master');
 
         $this->oOutput->writeln('');
         $this->oOutput->writeln('Project has been configured at <comment>' . $sDir . '</comment>');
@@ -105,7 +108,8 @@ final class Create extends Base
      */
     private function installWithDocker($sDir)
     {
-        $this->install($sDir, static::DOCKER_SKELETON, 'skeleton-docker-lamp-master');
+        $sDockerSkeleton = $this->oInput->getOption('docker-skeleton') ?: static::DOCKER_SKELETON;
+        $this->install($sDir, $sDockerSkeleton, 'skeleton-docker-lamp-master');
 
         $this->oOutput->writeln('');
         $this->oOutput->writeln('Project has been configured at <comment>' . $sDir . '</comment>');
