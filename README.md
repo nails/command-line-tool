@@ -53,7 +53,7 @@ If `nails` is called in a folder which contains a Nails installation then it wil
 
 ## Development
 
-This project uses [humbug/box](https://github.com/humbug/box) for compilation. You may use the following commands for developmenmt:
+This project uses [humbug/box](https://github.com/humbug/box) for compilation. You may use the following commands for development:
 
 ```bash
 composer build
