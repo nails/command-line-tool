@@ -23,23 +23,39 @@ composer global require nails/command-line-tool
 ### Manually
 
 1. Clone this repository
-2. Create a symlink of the executable at `dist/nails`
-3. Place the symlink somewhere in your `$PATH`
+2. Add `dist` to your `$PATH`
 
 
 ## Usage
 
+Create a new Nails project in the active directory
+
 ```bash
-# Create a new Nails project in the active directory
-nails new 
+nails new
+```
 
-# Create a new Nails project in another directory
+Create a new Nails project in another directory
+
+```bash
 nails new --dir=~/my-project
+```
 
-# Clone all active official Nails repositories to the active directory – this is useful for contributing 
+Clone all active official Nails repositories to the active directory – this is useful for contributing
+
+```bash
 nails dev:pull
 ```
 
 Execute `nails --help` for further information
 
 If `nails` is called in a folder which contains a Nails installation then it will proxy the app's console. To view all available commands for your app simply call `nails` with no arguments in the app's root directory.
+
+
+## Development
+
+This project uses [humbug/box](https://github.com/humbug/box) for compilation. You may use the following commands for developmenmt:
+
+```bash
+composer build
+composer test
+```

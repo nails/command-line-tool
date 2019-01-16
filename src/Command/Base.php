@@ -78,6 +78,8 @@ abstract class Base extends Command
      * Display a underlined title banner
      *
      * @param string $sTitle The text to display
+     *
+     * @return $this
      */
     protected function banner($sTitle)
     {
@@ -86,6 +88,8 @@ abstract class Base extends Command
         $this->oOutput->writeln('<info>' . $sTitle . '</info>');
         $this->oOutput->writeln('<info>' . str_repeat('-', strlen($sTitle)) . '</info>');
         $this->oOutput->writeln('');
+
+        return $this;
     }
 
     // --------------------------------------------------------------------------
