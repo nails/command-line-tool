@@ -54,6 +54,10 @@ final class Pull extends Base
 
             foreach ($aRepositories as $oRepository) {
 
+                if (!$this->repositoryExists($oRepository) && $oRepository->archived) {
+                    continue;
+                }
+
                 $this->oOutput->write('- <comment>' . str_pad($oRepository->full_name, $iMaxLength, ' ') . '</comment>');
 
                 try {
@@ -68,13 +72,10 @@ final class Pull extends Base
                         $this->repositoryUpdate($oRepository);
                         $this->oOutput->writeln('<info>updated</info>');
 
-                    } elseif (!$oRepository->archived) {
+                    } else {
 
                         $this->repositoryCreate($oRepository);
                         $this->oOutput->writeln('<info>created</info>');
-
-                    } else {
-                        $this->oOutput->writeln('<info>Archived</info>');
                     }
 
                 } catch (RepositoryException $e) {
@@ -178,11 +179,12 @@ final class Pull extends Base
             $sPath = $this->getRepositoryPath($oRepository);
             System::exec([
                 'cd "' . $sPath . '"',
-                'git checkout develop 2>&1',
-                'git pull origin master 2>&1',
+                'git fetch 2>&1',
+                'git checkout ' . $oRepository->default_branch . ' 2>&1',
+                'git pull origin ' . $oRepository->default_branch . ' 2>&1',
             ]);
         } catch (CommandFailedException $e) {
-            throw new UpdateException('Failed to create repository: ' . $e->getMessage());
+            throw new UpdateException('Failed to update repository: ' . $e->getMessage());
         }
     }
 

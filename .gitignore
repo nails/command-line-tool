@@ -2,3 +2,4 @@
 .idea/
 /vendor/
 /vendor-bin/**/vendor
+composer.lock

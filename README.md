@@ -7,7 +7,10 @@
 
 The command line tool for Nails makes creating new projects easy, and provides a simple interface to the installed console module.
 
+
+
 ## Installation:
+
 
 ### Using Homebrew
 ```bash
@@ -26,29 +29,41 @@ composer global require nails/command-line-tool
 2. Add `dist` to your `$PATH`
 
 
+
 ## Usage
 
-Create a new Nails project in the active directory
 
-```bash
-nails new
+### `nails`
+
+If `nails` is called in a folder which contains a Nails installation then it will proxy the app's console app. To view all available commands for your app simply call `nails` with no arguments in the app's root directory.
+
+To read more about writing console commands for your app, please read the documentation at [nails/module-console](https://github.com/nails/module-console/blob/master/docs/commands/README.md).
+
+If `nails` is called elsewhere then the following arguments are available.
+
+
+### `nails new`
+
+Create a new Nails project in the active directory using the [Docker skeleton](https://github.com/nails/skeleton-docker-lamp).
+
+The following options are available:
+
+```
+--dir[=DIR], -d                      Where to install, defaults to current working directory
+--app-skeleton[=APP-SKELETON]        The URL of the app skeleton to use
+--docker-skeleton[=DOCKER-SKELETON]  The URL of the Docker skeleton to use
+--no-docker                          Do not install the Docker environment
 ```
 
-Create a new Nails project in another directory
+### `nails dev:pull`
 
-```bash
-nails new --dir=~/my-project
-```
+Clone all non-archived [official Nails](https://github.com/nails) repositories to the active directory – this is useful for contributing. If the repository already exists then the default branch will be checked out, changes fetched, and pulled.
 
-Clone all active official Nails repositories to the active directory – this is useful for contributing
 
-```bash
-nails dev:pull
-```
+### Further reading
 
-Execute `nails --help` for further information
+The tool is built using the Symfony Console component, execute `nails --help` for further information.
 
-If `nails` is called in a folder which contains a Nails installation then it will proxy the app's console. To view all available commands for your app simply call `nails` with no arguments in the app's root directory.
 
 
 ## Development
