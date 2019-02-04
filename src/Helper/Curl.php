@@ -9,7 +9,7 @@ final class Curl
      *
      * @return string
      */
-    private function getUserAgent()
+    private static function getUserAgent()
     {
         return 'Nails Command Line Tool version ' . Updates::getCurrentVersion();
     }
