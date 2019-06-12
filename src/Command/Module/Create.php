@@ -246,11 +246,11 @@ final class Create extends Base
     /**
      * Validates the directory
      *
-     * @param string $sDir Validates the directory
+     * @param string|null $sDir Validates the directory
      *
      * @return bool
      */
-    protected function validateDirectory(string $sDir)
+    protected function validateDirectory(string $sDir = null)
     {
         $sDir = Directory::resolve($sDir);
         if (!Directory::isEmpty($sDir)) {
@@ -300,11 +300,11 @@ final class Create extends Base
     /**
      * Validates the name
      *
-     * @param string $sName Validates the name
+     * @param string|null $sName Validates the name
      *
      * @return bool|void
      */
-    protected function validateName(string $sName)
+    protected function validateName(string $sName = null)
     {
         if (!preg_match('/^[a-z\-0-9]+\/[a-z\-0-9]+$/', $sName)) {
             $this->error(['"' . $sName . '" is not in the format [a-z\-0-9]+/[a-z\-0-9]+']);
@@ -355,11 +355,11 @@ final class Create extends Base
     /**
      * Validates the namespace
      *
-     * @param string $sNamespace Validates the namespace
+     * @param string|null $sNamespace Validates the namespace
      *
      * @return bool
      */
-    protected function validateNamespace(string $sNamespace)
+    protected function validateNamespace(string $sNamespace = null)
     {
         if (!preg_match('/^[a-zA-Z0-9\\\_]+$/', $sNamespace)) {
             $this->error(['"' . $sNamespace . '" is not in the format [a-zA-Z0-9\\\_]+']);
