@@ -1,8 +1,8 @@
 <?php
 
-namespace Nails\Cli\Command;
+namespace Nails\Cli\Command\Project;
 
-
+use Nails\Cli\Command\Base;
 use Nails\Cli\Exceptions\Directory\FailedToCreateException;
 use Nails\Cli\Exceptions\Directory\NotEmptyException;
 use Nails\Cli\Exceptions\Zip\CannotOpenException;
@@ -20,7 +20,6 @@ final class Create extends Base
      */
     const DOCKER_SKELETON = 'https://github.com/nails/skeleton-docker-lamp/archive/master.zip';
 
-
     /**
      * The URL of the Docker skeleton
      *
@@ -36,13 +35,32 @@ final class Create extends Base
     protected function configure()
     {
         $this
-            ->setName('new')
-            ->setDescription('Create a new project')
+            ->setName('new:project')
+            ->setDescription('Create a new Nails project')
             ->setHelp('This command will create a new Nails project.')
-            ->addOption('dir', 'd', InputOption::VALUE_OPTIONAL, 'Where to install, defaults to current working directory')
-            ->addOption('app-skeleton', null, InputOption::VALUE_OPTIONAL, 'The URL of the app skeleton to use')
-            ->addOption('docker-skeleton', null, InputOption::VALUE_OPTIONAL, 'The URL of the Docker skeleton to use')
-            ->addOption('no-docker', null, InputOption::VALUE_NONE, 'Do not install the Docker environment');
+            ->addOption(
+                'dir',
+                'd',
+                InputOption::VALUE_OPTIONAL,
+                'Where to install, defaults to current working directory'
+            )
+            ->addOption(
+                'app-skeleton',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'The URL of the app skeleton to use'
+            )
+            ->addOption(
+                'docker-skeleton',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'The URL of the Docker skeleton to use'
+            )
+            ->addOption(
+                'no-docker',
+                null,
+                InputOption::VALUE_NONE,
+                'Do not install the Docker environment');
     }
 
     // --------------------------------------------------------------------------
