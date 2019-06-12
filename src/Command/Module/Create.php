@@ -177,12 +177,13 @@ final class Create extends Base
 
             list($sVendor, $sName) = explode('/', $this->sName);
 
-            $oComposer->name                     = $this->sName;
-            $oComposer->homepage                 = $this->sUrl;
-            $oComposer->description              = $this->sDescription;
-            $oComposer->extra->nails->moduleName = $sName;
-            $oComposer->extra->nails->namespace  = $this->sNamespace . '\\';
-            $oComposer->autoload->psr4           = (object) [$this->sNamespace => 'src/'];
+            $oComposer->name                        = $this->sName;
+            $oComposer->homepage                    = $this->sUrl;
+            $oComposer->description                 = $this->sDescription;
+            $oComposer->extra->nails->moduleName    = $sName;
+            $oComposer->extra->nails->namespace     = $this->sNamespace . '\\';
+            $oComposer->autoload->{"psr-4"}         = (object) [$this->sNamespace . '\\' => 'src/'];
+            $oComposer->{"autoload-dev"}->{"psr-4"} = (object) [$this->sNamespace . '\\Tests\\' => 'src/'];
 
             file_put_contents($this->sDir . 'composer.json', json_encode($oComposer, JSON_PRETTY_PRINT));
 
