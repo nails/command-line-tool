@@ -3,6 +3,7 @@
 
 namespace Nails\Cli;
 
+use Nails\Cli\Helper\Config;
 use Nails\Cli\Helper\Directory;
 use Nails\Cli\Helper\Updates;
 use Symfony\Component\Console\Application;
@@ -15,23 +16,31 @@ define('BASEPATH', Directory::normalize(__DIR__ . '/../'));
 
 // --------------------------------------------------------------------------
 
+define('APP_NAME', 'Nails Command Line Tool');
+
+// --------------------------------------------------------------------------
+
 $oApp    = new Application();
 $oFinder = new Finder();
+
+Config::loadConfig();
 
 //  Auto-load commands
 $sBasePath = BASEPATH . 'src';
 $oFinder->files()->in($sBasePath . '/Command');
 
 foreach ($oFinder as $oFile) {
+
     $sCommand = $oFile->getPath() . DIRECTORY_SEPARATOR . $oFile->getBasename('.php');
     $sCommand = str_replace($sBasePath, 'Nails/Cli', $sCommand);
     $sCommand = str_replace(DIRECTORY_SEPARATOR, '\\', $sCommand);
 
-    if ($sCommand !== 'Nails\\Cli\\Command\\Base') {
+    $oReflection = new \ReflectionClass($sCommand);
+    if (!$oReflection->isAbstract()) {
         $oApp->add(new $sCommand());
     }
 }
 
-$oApp->setName('Nails Command Line Tool');
+$oApp->setName(APP_NAME);
 $oApp->setVersion(Updates::getCurrentVersion());
 $oApp->run();

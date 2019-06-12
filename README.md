@@ -5,65 +5,7 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nails/command-line-tool/badges/quality-score.png)](https://scrutinizer-ci.com/g/nails/command-line-tool)
 [![Join the chat on Slack!](https://now-examples-slackin-rayibnpwqe.now.sh/badge.svg)](https://nails-app.slack.com/shared_invite/MTg1NDcyNjI0ODcxLTE0OTUwMzA1NTYtYTZhZjc5YjExMQ)
 
-The command line tool for Nails makes creating new projects easy, and provides a simple interface to the installed console module.
-
-
-
-## Installation:
-
-
-### Using Homebrew
-```bash
-brew tap nails/utilities
-brew install nails
-```
-
-### Using Composer
-```bash
-composer global require nails/command-line-tool
-```
-
-### Manually
-
-1. Clone this repository
-2. Add `dist` to your `$PATH`
-
-
-
-## Usage
-
-
-### `nails`
-
-If `nails` is called in a folder which contains a Nails installation then it will proxy the app's console app. To view all available commands for your app simply call `nails` with no arguments in the app's root directory.
-
-To read more about writing console commands for your app, please read the documentation at [nails/module-console](https://github.com/nails/module-console/blob/master/docs/commands/README.md).
-
-If `nails` is called elsewhere then the following arguments are available.
-
-
-### `nails new`
-
-Create a new Nails project in the active directory using the [Docker skeleton](https://github.com/nails/skeleton-docker-lamp).
-
-The following options are available:
-
-```
---dir[=DIR], -d                      Where to install, defaults to current working directory
---app-skeleton[=APP-SKELETON]        The URL of the app skeleton to use
---docker-skeleton[=DOCKER-SKELETON]  The URL of the Docker skeleton to use
---no-docker                          Do not install the Docker environment
-```
-
-### `nails dev:pull`
-
-Clone all non-archived [official Nails](https://github.com/nails) repositories to the active directory – this is useful for contributing. If the repository already exists then the default branch will be checked out, changes fetched, and pulled.
-
-
-### Further reading
-
-The tool is built using the Symfony Console component, execute `nails --help` for further information.
-
+The command line tool for Nails makes creating new projects easy, and provides a simple interface to the installed console module. Full documentation can be found [here](https://nailsapp.co.uk).
 
 
 ## Development

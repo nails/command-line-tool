@@ -150,6 +150,10 @@ abstract class Base extends Command
     protected function ask($sQuestion, $sDefault = null, $cValidation = null)
     {
         $sQuestion = $this->prepQuestion($sQuestion);
+        if (!empty($sDefault)) {
+            $sQuestion .= '[<comment>' . $sDefault . '</comment>] ';
+        }
+
         $oQuestion = new Question($sQuestion, $sDefault);
         $sResponse = $this->oQuestion->ask($this->oInput, $this->oOutput, $oQuestion);
 
