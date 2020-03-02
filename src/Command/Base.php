@@ -64,7 +64,11 @@ abstract class Base extends Command
 
         if (Updates::check()) {
             $this->warning([
-                'An update is available: ' . Updates::getLatestVersion() . ' (you have version ' . Updates::getCurrentVersion() . ')',
+                sprintf(
+                    'An update is available: %s (you have version %s)',
+                    Updates::getLatestVersion(),
+                    Updates::getCurrentVersion()
+                ),
                 'To update run: brew update && brew upgrade nails',
             ]);
         }
