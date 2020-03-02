@@ -113,7 +113,6 @@ final class Create extends Base
 
         $this->oOutput->writeln('');
         $this->oOutput->writeln('Project has been configured at <comment>' . $sDir . '</comment>');
-        $this->oOutput->writeln('Run <comment>nails install</comment> to complete installation');
         $this->oOutput->writeln('');
     }
 
