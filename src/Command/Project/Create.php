@@ -133,7 +133,7 @@ final class Create extends Base
 
         $this->oOutput->writeln('');
         $this->oOutput->writeln('Project has been configured at <comment>' . $sDir . '</comment>');
-        $this->oOutput->writeln('Run <comment>make up && make build</comment> to build containers and complete installation');
+        $this->oOutput->writeln('Run <comment>make up</comment> to build containers and complete installation');
         $this->oOutput->writeln('');
     }
 
