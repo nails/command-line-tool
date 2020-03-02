@@ -60,14 +60,18 @@ abstract class Base extends Command
         $this->oOutput   = $oOutput;
         $this->oQuestion = $this->getHelper('question');
 
+        Colors::setStyles($this->oOutput);
+
         if (Updates::check()) {
             $this->warning([
-                'An update is available: ' . Updates::getLatestVersion() . ' (you have version ' . Updates::getCurrentVersion() . ')',
+                sprintf(
+                    'An update is available: %s (you have version %s)',
+                    Updates::getLatestVersion(),
+                    Updates::getCurrentVersion()
+                ),
                 'To update run: brew update && brew upgrade nails',
             ]);
         }
-
-        Colors::setStyles($this->oOutput);
 
         return $this->go();
     }
