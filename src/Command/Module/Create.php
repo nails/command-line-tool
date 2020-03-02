@@ -204,7 +204,7 @@ final class Create extends Base
             $this->oOutput->writeln('');
         }
 
-        return return static::EXIT_CODE_SUCCESS;;
+        return static::EXIT_CODE_SUCCESS;
     }
 
     // --------------------------------------------------------------------------
