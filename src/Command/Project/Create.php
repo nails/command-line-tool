@@ -60,7 +60,8 @@ final class Create extends Base
                 'no-docker',
                 null,
                 InputOption::VALUE_NONE,
-                'Do not install the Docker environment');
+                'Do not install the Docker environment'
+            );
     }
 
     // --------------------------------------------------------------------------
