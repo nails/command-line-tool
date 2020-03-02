@@ -15,6 +15,15 @@ use Symfony\Component\Console\Question\Question;
 abstract class Base extends Command
 {
     /**
+     * The success exit code
+     *
+     * @var int
+     */
+    const EXIT_CODE_SUCCESS = 0;
+
+    // --------------------------------------------------------------------------
+
+    /**
      * The console's input interface
      *
      * @var InputInterface
@@ -43,9 +52,9 @@ abstract class Base extends Command
      * @param InputInterface  $oInput
      * @param OutputInterface $oOutput
      *
-     * @return int|null|void
+     * @return int
      */
-    protected function execute(InputInterface $oInput, OutputInterface $oOutput)
+    protected function execute(InputInterface $oInput, OutputInterface $oOutput): int
     {
         $this->oInput    = $oInput;
         $this->oOutput   = $oOutput;
@@ -60,7 +69,7 @@ abstract class Base extends Command
 
         Colors::setStyles($this->oOutput);
 
-        $this->go();
+        return $this->go();
     }
 
     // --------------------------------------------------------------------------

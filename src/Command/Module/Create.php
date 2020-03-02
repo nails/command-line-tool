@@ -108,9 +108,9 @@ final class Create extends Base
     /**
      * Execute the command
      *
-     * @return int|null|void
+     * @return int
      */
-    protected function go()
+    protected function go(): int
     {
         $this->banner('Create a new Nails module');
         $this->setVarDirectory();
@@ -203,6 +203,8 @@ final class Create extends Base
             $this->oOutput->writeln('Module has been created at <comment>' . $this->sDir . '</comment>');
             $this->oOutput->writeln('');
         }
+
+        return return static::EXIT_CODE_SUCCESS;;
     }
 
     // --------------------------------------------------------------------------

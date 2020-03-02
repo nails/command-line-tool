@@ -32,9 +32,9 @@ final class Pull extends Base
     /**
      * Execute the command
      *
-     * @return int|null|void
+     * @return int
      */
-    protected function go()
+    protected function go(): int
     {
         $this->banner('Updating Nails Repositories');
 
@@ -93,6 +93,8 @@ final class Pull extends Base
         }
 
         $this->oOutput->writeln('');
+
+        return static::EXIT_CODE_SUCCESS;
     }
 
     // --------------------------------------------------------------------------
