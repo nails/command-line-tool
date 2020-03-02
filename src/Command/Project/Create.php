@@ -68,9 +68,9 @@ final class Create extends Base
     /**
      * Execute the command
      *
-     * @return int|null|void
+     * @return int
      */
-    protected function go()
+    protected function go(): int
     {
         $this->banner('Install a new Nails project');
 
@@ -97,6 +97,8 @@ final class Create extends Base
         } else {
             $this->installWithDocker($sDir);
         }
+
+        return static::EXIT_CODE_SUCCESS;
     }
 
     // --------------------------------------------------------------------------
