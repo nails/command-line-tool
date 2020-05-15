@@ -270,13 +270,13 @@ final class Create extends Base
      */
     protected function setVarName(): void
     {
-        $this->sName = $this->oInput->getOption('name');
+        $this->sName = trim($this->oInput->getOption('name'));
         if ($this->sName) {
             if (!$this->validateName($this->sName)) {
-                $this->sName = $this->askForName();
+                $this->sName = trim($this->askForName());
             }
         } else {
-            $this->sName = $this->askForName();
+            $this->sName = trim($this->askForName());
         }
     }
 
@@ -323,13 +323,13 @@ final class Create extends Base
      */
     protected function setVarNamespace(): void
     {
-        $this->sNamespace = $this->oInput->getOption('namespace');
+        $this->sNamespace = trim($this->oInput->getOption('namespace'));
         if ($this->sNamespace) {
             if (!$this->validateNamespace($this->sNamespace)) {
-                $this->sNamespace = $this->askForNamespace();
+                $this->sNamespace = trim($this->askForNamespace());
             }
         } else {
-            $this->sNamespace = $this->askForNamespace();
+            $this->sNamespace = trim($this->askForNamespace());
         }
 
         $this->sNamespace = rtrim($this->sNamespace, '\\');
@@ -379,9 +379,9 @@ final class Create extends Base
      */
     protected function setVarUrl(): void
     {
-        $this->sUrl = $this->oInput->getOption('url');
+        $this->sUrl = trim($this->oInput->getOption('url'));
         if (!$this->sUrl) {
-            $this->sUrl = $this->askForUrl();
+            $this->sUrl = trim($this->askForUrl());
         }
     }
 
@@ -409,9 +409,9 @@ final class Create extends Base
      */
     protected function setVarDescription(): void
     {
-        $this->sDescription = $this->oInput->getOption('description');
+        $this->sDescription = trim($this->oInput->getOption('description'));
         if (!$this->sDescription) {
-            $this->sDescription = $this->askForDescription();
+            $this->sDescription = trim($this->askForDescription());
         }
     }
 
