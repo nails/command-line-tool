@@ -333,6 +333,7 @@ final class Create extends Base
         }
 
         $this->sNamespace = rtrim($this->sNamespace, '\\');
+        $this->sNamespace = str_replace('\\\\', '\\', $this->sNamespace);
     }
 
     // --------------------------------------------------------------------------
