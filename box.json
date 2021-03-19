@@ -23,5 +23,8 @@
             ],
             "in": "vendor"
         }
+    ],
+    "compactors": [
+        "KevinGH\\Box\\Compactor\\Php"
     ]
 }
