@@ -31,7 +31,7 @@
     },
     "require-dev": {
         "phpunit/phpunit": "9.*",
-        "phpstan/phpstan": "^0.12"
+        "phpstan/phpstan": "0.*"
     },
     "autoload": {
         "psr-4": {
@@ -43,7 +43,7 @@
         "post-update-cmd": ["@composer bin all update --ansi"],
         "build" : ["./scripts/build.sh"],
         "test" : ["./scripts/test.sh"],
-        "analyse": ["./scripts/analyse.sh"]
+        "analyse": "./vendor/bin/phpstan analyse -c .phpstan/config.neon"
     },
     "bin": [
         "dist/nails",
