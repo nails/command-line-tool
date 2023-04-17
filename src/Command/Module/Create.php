@@ -309,7 +309,7 @@ final class Create extends Base
      */
     protected function validateName(string $sName = null)
     {
-        if (!preg_match('/^[a-z\-0-9]+\/[a-z\-0-9]+$/', $sName)) {
+        if (!preg_match('/^[a-z\-0-9]+\/[a-z\-0-9]+$/', (string) $sName)) {
             $this->error(['"' . $sName . '" is not in the format [a-z\-0-9]+/[a-z\-0-9]+']);
             return false;
         }
@@ -365,7 +365,7 @@ final class Create extends Base
      */
     protected function validateNamespace(string $sNamespace = null)
     {
-        if (!preg_match('/^[a-zA-Z0-9\\\_]+$/', $sNamespace)) {
+        if (!preg_match('/^[a-zA-Z0-9\\\_]+$/', (string) $sNamespace)) {
             $this->error(['"' . $sNamespace . '" is not in the format [a-zA-Z0-9\\\_]+']);
             return false;
         }
