@@ -167,7 +167,7 @@ final class Create extends Base
             $this->oOutput->writeln('<info>done</info>');
 
         } else {
-            $this->oOutput->writeln('<error>failed</error>');
+            $this->oOutput->writeln('<error>fail</error>');
             throw new CannotOpenException('Failed to extract archive');
         }
 

@@ -91,10 +91,8 @@ abstract class Base extends Command
      * Display a underlined title banner
      *
      * @param string $sTitle The text to display
-     *
-     * @return $this
      */
-    protected function banner($sTitle)
+    protected function banner(string $sTitle): self
     {
         $sTitle = $sTitle ? 'Nails CLI: ' . $sTitle : 'Nails CLI';
         $this->oOutput->writeln('');
@@ -110,11 +108,11 @@ abstract class Base extends Command
     /**
      * Renders an error block
      *
-     * @param array $aLines The lines to render
+     * @param string[] $aLines The lines to render
      */
-    protected function error(array $aLines)
+    protected function error(array $aLines): self§
     {
-        $this->outputBlock($aLines, 'error');
+        return $this->outputBlock($aLines, 'error');
     }
 
     // --------------------------------------------------------------------------
@@ -122,11 +120,11 @@ abstract class Base extends Command
     /**
      * Renders an warning block
      *
-     * @param array $aLines The lines to render
+     * @param string[] $aLines The lines to render
      */
-    protected function warning(array $aLines)
+    protected function warning(array $aLines): self
     {
-        $this->outputBlock($aLines, 'warning');
+        return $this->outputBlock($aLines, 'warning');
     }
 
     // --------------------------------------------------------------------------
@@ -137,7 +135,7 @@ abstract class Base extends Command
      * @param array  $aLines The lines to render
      * @param string $sType  The type of block to render
      */
-    protected function outputBlock(array $aLines, $sType)
+    protected function outputBlock(array $aLines, $sType): self
     {
         $aLengths   = array_map('strlen', $aLines);
         $iMaxLength = max($aLengths);
@@ -147,6 +145,8 @@ abstract class Base extends Command
             $this->oOutput->writeln('<' . $sType . '> ' . str_pad($sLine, $iMaxLength, ' ') . ' </' . $sType . '>');
         }
         $this->oOutput->writeln('<' . $sType . '> ' . str_pad('', $iMaxLength, ' ') . ' </' . $sType . '>');
+
+        return $this;
     }
 
     // --------------------------------------------------------------------------
@@ -187,9 +187,9 @@ abstract class Base extends Command
      * @param int      $iDefault    The default option
      * @param callable $cValidation A validation callback
      *
-     * @return integer
+     * @return int
      */
-    protected function choose($sQuestion, array $aOptions, $iDefault = 0, $cValidation = null)
+    protected function choose(string $sQuestion, array $aOptions, int $iDefault = 0, $cValidation = null): int
     {
         $sQuestion = $this->prepQuestion($sQuestion);
         $oQuestion = new ChoiceQuestion($sQuestion, $aOptions, $iDefault);
@@ -209,10 +209,8 @@ abstract class Base extends Command
      *
      * @param string $sQuestion the question to ask
      * @param bool   $bDefault  The default response
-     *
-     * @return boolean
      */
-    protected function confirm($sQuestion, $bDefault = true)
+    protected function confirm(string $sQuestion, bool $bDefault = true): bool
     {
         $sQuestion = $this->prepQuestion($sQuestion);
         $oQuestion = new ConfirmationQuestion($sQuestion, $bDefault);
@@ -225,10 +223,8 @@ abstract class Base extends Command
      * Prepare the question string
      *
      * @param string $sQuestion The question to prepare
-     *
-     * @return string
      */
-    private function prepQuestion($sQuestion)
+    private function prepQuestion(string $sQuestion): string
     {
         $sQuestion = trim($sQuestion);
         if (preg_match('/[^?:]$/', $sQuestion)) {

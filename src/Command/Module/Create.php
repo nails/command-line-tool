@@ -165,7 +165,7 @@ final class Create extends Base
                 $this->oOutput->writeln('<info>done</info>');
 
             } else {
-                $this->oOutput->writeln('<error>failed</error>');
+                $this->oOutput->writeln('<error>fail</error>');
                 throw new CannotOpenException('Failed to extract archive');
             }
 
@@ -235,7 +235,7 @@ final class Create extends Base
      *
      * @return mixed
      */
-    protected function askForDirectory(string $sDefault = null)
+    protected function askForDirectory(?string $sDefault = null)
     {
         return $this->ask(
             'Directory',
@@ -253,7 +253,7 @@ final class Create extends Base
      *
      * @return bool
      */
-    protected function validateDirectory(string $sDir = null)
+    protected function validateDirectory(?string $sDir = null)
     {
         $sDir = Directory::resolve($sDir);
         if (!Directory::isEmpty($sDir)) {
@@ -289,7 +289,7 @@ final class Create extends Base
      *
      * @return mixed
      */
-    protected function askForName(string $sDefault = null)
+    protected function askForName(?string $sDefault = null)
     {
         return $this->ask(
             'Name ({vendor}/{name})',
@@ -307,9 +307,9 @@ final class Create extends Base
      *
      * @return bool|void
      */
-    protected function validateName(string $sName = null)
+    protected function validateName(?string $sName = null)
     {
-        if (!preg_match('/^[a-z\-0-9]+\/[a-z\-0-9]+$/', $sName)) {
+        if (!preg_match('/^[a-z\-0-9]+\/[a-z\-0-9]+$/', (string) $sName)) {
             $this->error(['"' . $sName . '" is not in the format [a-z\-0-9]+/[a-z\-0-9]+']);
             return false;
         }
@@ -345,7 +345,7 @@ final class Create extends Base
      *
      * @return mixed
      */
-    protected function askForNamespace(string $sDefault = null)
+    protected function askForNamespace(?string $sDefault = null)
     {
         return $this->ask(
             'Namespace',
@@ -363,9 +363,9 @@ final class Create extends Base
      *
      * @return bool
      */
-    protected function validateNamespace(string $sNamespace = null)
+    protected function validateNamespace(?string $sNamespace = null)
     {
-        if (!preg_match('/^[a-zA-Z0-9\\\_]+$/', $sNamespace)) {
+        if (!preg_match('/^[a-zA-Z0-9\\\_]+$/', (string) $sNamespace)) {
             $this->error(['"' . $sNamespace . '" is not in the format [a-zA-Z0-9\\\_]+']);
             return false;
         }
@@ -394,7 +394,7 @@ final class Create extends Base
      *
      * @return mixed
      */
-    protected function askForUrl(string $sDefault = null)
+    protected function askForUrl(?string $sDefault = null)
     {
         return $this->ask(
             'URL',
@@ -424,7 +424,7 @@ final class Create extends Base
      *
      * @return mixed
      */
-    protected function askForDescription(string $sDefault = null)
+    protected function askForDescription(?string $sDefault = null)
     {
         return $this->ask(
             'Description',
