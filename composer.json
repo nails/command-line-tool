@@ -1,6 +1,6 @@
 {
     "name": "nails/command-line-tool",
-    "version": "1.4.2",
+    "version": "1.4.3",
     "keywords": [
         "Nails",
         "Shed Collective",
@@ -30,7 +30,7 @@
         "symfony/finder": "^6.4"
     },
     "require-dev": {
-        "phpunit/phpunit": "^13.0",
+        "phpunit/phpunit": "^12.0",
         "phpstan/phpstan": "^2.0"
     },
     "autoload": {
