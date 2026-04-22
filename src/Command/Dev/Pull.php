@@ -19,7 +19,7 @@ final class Pull extends Base
     /**
      * Configure the command
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('dev:pull')

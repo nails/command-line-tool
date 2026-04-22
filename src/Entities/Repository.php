@@ -11,6 +11,10 @@ final class Repository
      */
     private $oRepository;
 
+    public ?string $name;
+    public ?string $default_branch;
+    public ?string $ssh_url;
+
     // --------------------------------------------------------------------------
 
     /**
