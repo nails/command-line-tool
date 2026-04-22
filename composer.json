@@ -1,8 +1,7 @@
 {
     "name": "nails/command-line-tool",
     "version": "1.4.0",
-    "keywords":
-    [
+    "keywords": [
         "Nails",
         "Shed Collective",
         "CodeIgniter"
@@ -10,22 +9,19 @@
     "homepage": "http://nailsapp.co.uk",
     "description": "The command line tool for Nails makes creating new projects easy, and provides a simple interface to the installed console module.",
     "license": "MIT",
-    "authors":
-    [
+    "authors": [
         {
-            "name": "Pablo de la Peña",
+            "name": "Pablo de la Pe\u00f1a",
             "email": "p@nailsapp.co.uk"
         }
     ],
-    "support":
-    {
+    "support": {
         "email": "hello@nailsapp.co.uk"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "require":
-    {
-        "php": ">=8.1",
+    "require": {
+        "php": ">=8.3",
         "ext-json": "*",
         "ext-zip": "*",
         "ext-curl": "*",
@@ -33,47 +29,36 @@
         "symfony/console": "^6.4",
         "symfony/finder": "^6.4"
     },
-    "require-dev":
-    {
-        "phpunit/phpunit": "10.*",
+    "require-dev": {
+        "phpunit/phpunit": "^12.0",
         "phpstan/phpstan": "2.*"
     },
-    "autoload":
-    {
-        "psr-4":
-        {
+    "autoload": {
+        "psr-4": {
             "Nails\\Cli\\": "src/"
         }
     },
-    "scripts":
-    {
-        "post-install-cmd":
-        [
+    "scripts": {
+        "post-install-cmd": [
             "@composer bin all install --ansi"
         ],
-        "post-update-cmd":
-        [
+        "post-update-cmd": [
             "@composer bin all update --ansi"
         ],
-        "build":
-        [
+        "build": [
             "./scripts/build.sh"
         ],
-        "test":
-        [
+        "test": [
             "./scripts/test.sh"
         ],
         "analyse": "./vendor/bin/phpstan analyse -c .phpstan/config.neon"
     },
-    "bin":
-    [
+    "bin": [
         "dist/nails",
         "dist/nails-cli"
     ],
-    "config":
-    {
-        "allow-plugins":
-        {
+    "config": {
+        "allow-plugins": {
             "bamarni/composer-bin-plugin": true
         }
     }
