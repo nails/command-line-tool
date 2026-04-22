@@ -34,9 +34,9 @@ final class System
      *
      * @return bool
      */
-    public static function commandExists($sCommand)
+    public static function commandExists($sCommand): bool
     {
-        $sCommandPath = `which $sCommand`;
+        $sCommandPath = shell_exec('which $sCommand');
         return !empty($sCommandPath);
     }
 }

@@ -5,6 +5,7 @@ namespace Nails\Cli\Command;
 use Nails\Cli\Helper\Colors;
 use Nails\Cli\Helper\Updates;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\HelperInterface;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -110,7 +111,7 @@ abstract class Base extends Command
      *
      * @param string[] $aLines The lines to render
      */
-    protected function error(array $aLines): self§
+    protected function error(array $aLines): self
     {
         return $this->outputBlock($aLines, 'error');
     }

@@ -1,5 +1,6 @@
 parameters:
     level: 2
-    memory-limit: 512
     paths:
         - ../src
+    scanDirectories:
+        - ../bin

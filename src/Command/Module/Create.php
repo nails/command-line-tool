@@ -61,7 +61,7 @@ final class Create extends Base
     /**
      * Configure the command
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->sDir = getcwd();
 

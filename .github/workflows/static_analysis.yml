@@ -25,14 +25,15 @@ jobs:
             -   name: Setup PHP
                 uses: shivammathur/setup-php@v2
                 with:
-                    php-version: '8.4'
+                    php-version: '8.5'
 
             -   name: Cache Composer dependencies
                 uses: actions/cache@v4
                 with:
                     path: vendor
                     key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
-                    restore-keys: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+                    restore-keys: |
+                        ${{ runner.os }}-composer-
 
             -   name: Install Composer dependencies
                 run: COMPOSER_ROOT_VERSION=dev-develop composer install --no-interaction --prefer-dist
