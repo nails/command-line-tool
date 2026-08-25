@@ -58,6 +58,9 @@
         "dist/nails-cli"
     ],
     "config": {
+        "platform": {
+            "php": "8.3.0"
+        },
         "allow-plugins": {
             "bamarni/composer-bin-plugin": true
         }
