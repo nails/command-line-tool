@@ -59,7 +59,7 @@ abstract class Base extends Command
     {
         $this->oInput    = $oInput;
         $this->oOutput   = $oOutput;
-        $this->oQuestion = $this->getHelper('question');
+        $this->oQuestion = $this->getQuestionHelper();
 
         Colors::setStyles($this->oOutput);
 
@@ -75,6 +75,17 @@ abstract class Base extends Command
         }
 
         return $this->go();
+    }
+
+    /**
+     * @return QuestionHelper
+     */
+    private function getQuestionHelper(): QuestionHelper
+    {
+        /** @var QuestionHelper $oQuestionHelper */
+        $oQuestionHelper = $this->getHelper('question');
+
+        return $oQuestionHelper;
     }
 
     // --------------------------------------------------------------------------

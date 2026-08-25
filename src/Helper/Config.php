@@ -2,6 +2,8 @@
 
 namespace Nails\Cli\Helper;
 
+use stdClass;
+
 final class Config
 {
     /**
@@ -23,9 +25,9 @@ final class Config
     /**
      * The config object
      *
-     * @var \stdClass
+     * @var stdClass|null
      */
-    static $oConfig;
+    static ?stdClass $oConfig;
 
     // --------------------------------------------------------------------------
 

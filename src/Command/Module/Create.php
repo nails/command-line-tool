@@ -272,11 +272,11 @@ final class Create extends Base
     {
         $this->sName = trim($this->oInput->getOption('name'));
         if ($this->sName) {
-            if (!$this->validateName($this->sName)) {
-                $this->sName = trim($this->askForName());
+            if (!$this->validateModuleName($this->sName)) {
+                $this->sName = trim($this->askForModuleName());
             }
         } else {
-            $this->sName = trim($this->askForName());
+            $this->sName = trim($this->askForModuleName());
         }
     }
 
@@ -289,12 +289,12 @@ final class Create extends Base
      *
      * @return mixed
      */
-    protected function askForName(?string $sDefault = null)
+    protected function askForModuleName(?string $sDefault = null)
     {
         return $this->ask(
             'Name ({vendor}/{name})',
             $sDefault,
-            [$this, 'validateName']
+            [$this, 'validateModuleName']
         );
     }
 
@@ -305,9 +305,9 @@ final class Create extends Base
      *
      * @param string|null $sName Validates the name
      *
-     * @return bool|void
+     * @return bool
      */
-    protected function validateName(?string $sName = null)
+    protected function validateModuleName(?string $sName = null): bool
     {
         if (!preg_match('/^[a-z\-0-9]+\/[a-z\-0-9]+$/', (string) $sName)) {
             $this->error(['"' . $sName . '" is not in the format [a-z\-0-9]+/[a-z\-0-9]+']);
@@ -325,11 +325,11 @@ final class Create extends Base
     {
         $this->sNamespace = trim($this->oInput->getOption('namespace'));
         if ($this->sNamespace) {
-            if (!$this->validateNamespace($this->sNamespace)) {
-                $this->sNamespace = trim($this->askForNamespace());
+            if (!$this->validateModuleNamespace($this->sNamespace)) {
+                $this->sNamespace = trim($this->askForModuleNamespace());
             }
         } else {
-            $this->sNamespace = trim($this->askForNamespace());
+            $this->sNamespace = trim($this->askForModuleNamespace());
         }
 
         $this->sNamespace = rtrim($this->sNamespace, '\\');
@@ -345,12 +345,12 @@ final class Create extends Base
      *
      * @return mixed
      */
-    protected function askForNamespace(?string $sDefault = null)
+    protected function askForModuleNamespace(?string $sDefault = null)
     {
         return $this->ask(
             'Namespace',
             $sDefault,
-            [$this, 'validateNamespace']
+            [$this, 'validateModuleNamespace']
         );
     }
 
@@ -363,7 +363,7 @@ final class Create extends Base
      *
      * @return bool
      */
-    protected function validateNamespace(?string $sNamespace = null)
+    protected function validateModuleNamespace(?string $sNamespace = null): bool
     {
         if (!preg_match('/^[a-zA-Z0-9\\\_]+$/', (string) $sNamespace)) {
             $this->error(['"' . $sNamespace . '" is not in the format [a-zA-Z0-9\\\_]+']);
