@@ -9,11 +9,13 @@ final class Repository
      *
      * @var \stdClass
      */
-    private $oRepository;
+    public readonly \stdClass $oRepository;
 
-    public ?string $name;
-    public ?string $default_branch;
-    public ?string $ssh_url;
+    public readonly ?string $name;
+    public readonly ?string $full_name;
+    public readonly ?string $default_branch;
+    public readonly ?string $ssh_url;
+    public readonly ?bool $archived;
 
     // --------------------------------------------------------------------------
 
@@ -24,18 +26,11 @@ final class Repository
      */
     public function __construct(\stdClass $oRepository)
     {
-        $this->oRepository = $oRepository;
-    }
-
-    // --------------------------------------------------------------------------
-
-    /**
-     * @param string $oProperty The property to get
-     *
-     * @return mixed
-     */
-    public function __get($oProperty)
-    {
-        return $this->oRepository->{$oProperty};
+        $this->oRepository    = $oRepository;
+        $this->name           = $oRepository->name ?? null;
+        $this->full_name      = $oRepository->full_name ?? null;
+        $this->default_branch = $oRepository->default_branch ?? null;
+        $this->ssh_url        = $oRepository->ssh_url ?? null;
+        $this->archived       = $oRepository->archived ?? null;
     }
 }

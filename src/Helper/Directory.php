@@ -62,11 +62,11 @@ final class Directory
      *
      * @param string $sPath the path to resolve
      *
-     * @return string|string[]|null
+     * @return string
      */
-    public static function resolve($sPath)
+    public static function resolve(?string $sPath): string
     {
-        $sPath = trim($sPath);
+        $sPath = trim($sPath ?? '');
 
         //  Resolve ~/
         if (array_key_exists('HOME', $_SERVER)) {

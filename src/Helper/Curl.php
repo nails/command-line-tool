@@ -31,7 +31,6 @@ final class Curl
         curl_setopt($oCurl, CURLOPT_HEADER, false);
         curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, true);
         $sResult = curl_exec($oCurl);
-        curl_close($oCurl);
 
         return $sResult;
     }

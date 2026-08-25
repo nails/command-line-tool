@@ -11,8 +11,10 @@ use Nails\Cli\Exceptions\Repository\UpdateException;
 use Nails\Cli\Exceptions\RepositoryException;
 use Nails\Cli\Exceptions\System\CommandFailedException;
 use Nails\Cli\Helper\Curl;
+use Nails\Cli\Helper\Debug;
 use Nails\Cli\Helper\Directory;
 use Nails\Cli\Helper\System;
+use Symfony\Component\Console\Input\InputOption;
 
 final class Pull extends Base
 {
@@ -24,7 +26,13 @@ final class Pull extends Base
         $this
             ->setName('dev:pull')
             ->setDescription('Pull a copy of all active Nails repositories')
-            ->setHelp('This command will clone all active Nails repositories from GitHub to the active directory');
+            ->setHelp('This command will clone all active Nails repositories from GitHub to the active directory')
+            ->addOption(
+                'branch',
+                'b',
+                InputOption::VALUE_OPTIONAL,
+                'The branch to pull'
+            );
     }
 
     // --------------------------------------------------------------------------
@@ -124,7 +132,7 @@ final class Pull extends Base
             $iPage++;
         }
 
-        sort($aRepositories);
+        usort($aRepositories, fn($a, $b) => $a->name <=> $b->name);
 
         $aOut = [];
         foreach ($aRepositories as $oRepository) {
@@ -178,12 +186,13 @@ final class Pull extends Base
     private function repositoryUpdate(Repository $oRepository)
     {
         try {
-            $sPath = $this->getRepositoryPath($oRepository);
+            $sBranch = $this->getBranch($oRepository);
+            $sPath   = $this->getRepositoryPath($oRepository);
             System::exec([
                 'cd "' . $sPath . '"',
                 'git fetch 2>&1',
-                'git checkout ' . $oRepository->default_branch . ' 2>&1',
-                'git pull origin ' . $oRepository->default_branch . ' 2>&1',
+                'git checkout ' . $sBranch . ' 2>&1',
+                'git pull origin ' . $sBranch . ' 2>&1',
             ]);
         } catch (CommandFailedException $e) {
             throw new UpdateException('Failed to update repository: ' . $e->getMessage());
@@ -200,15 +209,31 @@ final class Pull extends Base
     private function repositoryCreate(Repository $oRepository)
     {
         try {
-            $sPath = $this->getRepositoryPath($oRepository);
+            $sBranch = $this->getBranch($oRepository);
+            $sPath   = $this->getRepositoryPath($oRepository);
             System::exec([
                 'mkdir -p "' . $sPath . '"',
                 'cd "' . $sPath . '"',
                 'git clone ' . $oRepository->ssh_url . ' . 2>&1',
+                'git checkout ' . $sBranch . ' 2>&1',
             ]);
         } catch (CommandFailedException $e) {
             throw new CreateException('Failed to create repository: ' . $e->getMessage());
         }
+    }
+
+    // --------------------------------------------------------------------------
+
+    /**
+     * Returns the branch to checkout/pull for the repository
+     *
+     * @param Repository $oRepository The repository
+     *
+     * @return string|null
+     */
+    private function getBranch(Repository $oRepository): ?string
+    {
+        return $this->oInput->getOption('branch') ?: $oRepository->default_branch;
     }
 
     // --------------------------------------------------------------------------

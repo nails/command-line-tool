@@ -1,6 +1,6 @@
 {
     "name": "nails/command-line-tool",
-    "version": "1.4.3",
+    "version": "1.4.4",
     "keywords": [
         "Nails",
         "Shed Collective",
@@ -11,7 +11,7 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Pablo de la Pe\u00f1a",
+            "name": "Pablo de la Peña",
             "email": "p@nailsapp.co.uk"
         }
     ],
