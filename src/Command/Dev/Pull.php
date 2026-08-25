@@ -4,20 +4,24 @@ namespace Nails\Cli\Command\Dev;
 
 use Nails\Cli\Command\Base;
 use Nails\Cli\Entities\Repository;
-use Nails\Cli\Exceptions\Repository\CreateException;
-use Nails\Cli\Exceptions\Repository\DeleteException;
+use Nails\Cli\Exceptions\Directory\DoesNotExistException;
 use Nails\Cli\Exceptions\Repository\FetchException;
-use Nails\Cli\Exceptions\Repository\UpdateException;
-use Nails\Cli\Exceptions\RepositoryException;
-use Nails\Cli\Exceptions\System\CommandFailedException;
 use Nails\Cli\Helper\Curl;
-use Nails\Cli\Helper\Debug;
 use Nails\Cli\Helper\Directory;
-use Nails\Cli\Helper\System;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\ConsoleOutputInterface;
+use Symfony\Component\Console\Output\ConsoleSectionOutput;
+use Symfony\Component\Process\Process;
 
 final class Pull extends Base
 {
+    /**
+     * Default number of concurrent processes
+     */
+    const DEFAULT_CONCURRENCY = 4;
+
+    // --------------------------------------------------------------------------
+
     /**
      * Configure the command
      */
@@ -32,6 +36,19 @@ final class Pull extends Base
                 'b',
                 InputOption::VALUE_OPTIONAL,
                 'The branch to pull'
+            )
+            ->addOption(
+                'dir',
+                'd',
+                InputOption::VALUE_OPTIONAL,
+                'Where to install, defaults to current working directory'
+            )
+            ->addOption(
+                'concurrency',
+                'c',
+                InputOption::VALUE_OPTIONAL,
+                'The number of concurrent repositories to process',
+                self::DEFAULT_CONCURRENCY
             );
     }
 
@@ -48,48 +65,15 @@ final class Pull extends Base
 
         try {
 
-            $aNames        = [];
+            $this->validateDirectory();
+
             $aRepositories = $this->fetchRepositories();
-
-            foreach ($aRepositories as $oRepository) {
-                $aNames[] = $oRepository->full_name;
-            }
-
-            $aLengths   = array_map('strlen', $aNames);
-            $iMaxLength = max($aLengths) + 2;
+            $aNames        = array_map(fn(Repository $r) => (string) $r->full_name, $aRepositories);
+            $iMaxLength    = !empty($aNames) ? max(array_map('strlen', $aNames)) + 2 : 40;
 
             $this->oOutput->writeln('');
 
-            foreach ($aRepositories as $oRepository) {
-
-                if (!$this->repositoryExists($oRepository) && $oRepository->archived) {
-                    continue;
-                }
-
-                $this->oOutput->write('- <comment>' . str_pad($oRepository->full_name, $iMaxLength, ' ') . '</comment>');
-
-                try {
-
-                    if ($this->repositoryExists($oRepository) && $oRepository->archived) {
-
-                        $this->repositoryDelete($oRepository);
-                        $this->oOutput->writeln('<error>deleted</error>');
-
-                    } elseif ($this->repositoryExists($oRepository) && !$oRepository->archived) {
-
-                        $this->repositoryUpdate($oRepository);
-                        $this->oOutput->writeln('<info>updated</info>');
-
-                    } else {
-
-                        $this->repositoryCreate($oRepository);
-                        $this->oOutput->writeln('<info>created</info>');
-                    }
-
-                } catch (RepositoryException $e) {
-                    $this->oOutput->writeln('<error>' . $e->getMessage() . '</error>');
-                }
-            }
+            $this->processRepositories($aRepositories, $iMaxLength);
 
             $this->oOutput->writeln('');
             $this->oOutput->writeln('Finished processing repositories');
@@ -103,6 +87,178 @@ final class Pull extends Base
         $this->oOutput->writeln('');
 
         return static::EXIT_CODE_SUCCESS;
+    }
+
+    // --------------------------------------------------------------------------
+
+    /**
+     * Processes repositories concurrently using a worker pool
+     *
+     * @param Repository[] $aRepositories The repositories to process
+     * @param int          $iMaxLength    The maximum repository name length for alignment
+     */
+    private function processRepositories(array $aRepositories, int $iMaxLength): void
+    {
+        $iConcurrency = (int) $this->oInput->getOption('concurrency');
+        $iConcurrency = max(1, $iConcurrency > 0 ? $iConcurrency : self::DEFAULT_CONCURRENCY);
+
+        $aQueue = [];
+        foreach ($aRepositories as $oRepository) {
+            $bExists = $this->repositoryExists($oRepository);
+
+            if ($bExists) {
+                $sAction = $oRepository->archived ? 'delete' : 'update';
+            } elseif (!$oRepository->archived) {
+                $sAction = 'create';
+            } else {
+                continue;
+            }
+
+            $aQueue[] = [
+                'repo'   => $oRepository,
+                'action' => $sAction,
+            ];
+        }
+
+        $bSupportsSections = ($this->oOutput instanceof ConsoleOutputInterface && $this->oOutput->isDecorated());
+        $oCompletedSection = null;
+        /** @var ConsoleSectionOutput[] $aWorkerSections */
+        $aWorkerSections   = [];
+
+        if ($bSupportsSections) {
+            /** @var ConsoleOutputInterface $oOutput */
+            $oOutput           = $this->oOutput;
+            $oCompletedSection = $oOutput->section();
+            for ($i = 0; $i < $iConcurrency; $i++) {
+                $aWorkerSections[$i] = $oOutput->section();
+            }
+        }
+
+        $aRunning = []; // Keyed by slot ID: ['repo' => Repository, 'action' => string, 'process' => Process]
+
+        while (!empty($aQueue) || !empty($aRunning)) {
+
+            // Fill available slots
+            for ($iSlot = 0; $iSlot < $iConcurrency; $iSlot++) {
+                if (!isset($aRunning[$iSlot]) && !empty($aQueue)) {
+                    $aTask = array_shift($aQueue);
+                    /** @var Repository $oRepo */
+                    $oRepo   = $aTask['repo'];
+                    $sAction = $aTask['action'];
+
+                    $oProcess = $this->createRepositoryProcess($oRepo, $sAction);
+                    $oProcess->start();
+
+                    if (isset($aWorkerSections[$iSlot])) {
+                        $aWorkerSections[$iSlot]->overwrite(
+                            '- <comment>' . str_pad((string) $oRepo->full_name, $iMaxLength, ' ') . '</comment><comment>running...</comment>'
+                        );
+                    }
+
+                    $aRunning[$iSlot] = [
+                        'repo'    => $oRepo,
+                        'action'  => $sAction,
+                        'process' => $oProcess,
+                    ];
+                }
+            }
+
+            // Poll running processes
+            foreach ($aRunning as $iSlot => $aRunningTask) {
+                /** @var Process $oProcess */
+                $oProcess = $aRunningTask['process'];
+                /** @var Repository $oRepo */
+                $oRepo    = $aRunningTask['repo'];
+                $sAction  = $aRunningTask['action'];
+
+                if (!$oProcess->isRunning()) {
+                    if ($oProcess->isSuccessful()) {
+                        $sStatus = match ($sAction) {
+                            'delete' => '<error>deleted</error>',
+                            'update' => '<info>updated</info>',
+                            'create' => '<info>created</info>',
+                        };
+                    } else {
+                        $sErrorOutput = trim($oProcess->getErrorOutput() ?: $oProcess->getOutput());
+                        $sStatus      = match ($sAction) {
+                            'delete' => '<error>Failed to delete repository: ' . $sErrorOutput . '</error>',
+                            'update' => '<error>Failed to update repository: ' . $sErrorOutput . '</error>',
+                            'create' => '<error>Failed to create repository: ' . $sErrorOutput . '</error>',
+                        };
+                    }
+
+                    $sLine = '- <comment>' . str_pad((string) $oRepo->full_name, $iMaxLength, ' ') . '</comment>' . $sStatus;
+
+                    if ($oCompletedSection instanceof ConsoleSectionOutput) {
+                        if (isset($aWorkerSections[$iSlot])) {
+                            $aWorkerSections[$iSlot]->clear();
+                        }
+                        $oCompletedSection->writeln($sLine);
+                    } else {
+                        $this->oOutput->writeln($sLine);
+                    }
+
+                    unset($aRunning[$iSlot]);
+                }
+            }
+
+            if (!empty($aRunning)) {
+                usleep(25000); // 25ms
+            }
+        }
+
+        foreach ($aWorkerSections as $oSection) {
+            $oSection->clear();
+        }
+    }
+
+    // --------------------------------------------------------------------------
+
+    /**
+     * Creates a Process instance for repository action
+     *
+     * @param Repository $oRepository The repository
+     * @param string     $sAction     The action to perform ('delete', 'update', 'create')
+     *
+     * @return Process
+     */
+    private function createRepositoryProcess(Repository $oRepository, string $sAction): Process
+    {
+        $sPath   = $this->getRepositoryPath($oRepository);
+        $sBranch = $this->getBranch($oRepository) ?: 'master';
+
+        $sBranchCheck = sprintf(
+            '(git show-ref --verify --quiet refs/heads/%s || git show-ref --verify --quiet refs/remotes/origin/%s) || (echo %s 1>&2 && exit 1)',
+            escapeshellarg($sBranch),
+            escapeshellarg($sBranch),
+            escapeshellarg("branch {$sBranch} does not exist")
+        );
+
+        if ($sAction === 'delete') {
+            $oProcess = Process::fromShellCommandline('rm -rf ' . escapeshellarg($sPath));
+        } elseif ($sAction === 'update') {
+            $sCmd = implode(' && ', [
+                'cd ' . escapeshellarg($sPath),
+                'git fetch 2>&1',
+                $sBranchCheck,
+                'git checkout ' . escapeshellarg($sBranch) . ' 2>&1',
+                '(git show-ref --verify --quiet refs/remotes/origin/' . escapeshellarg($sBranch) . ' && git pull origin ' . escapeshellarg($sBranch) . ' 2>&1 || true)',
+            ]);
+            $oProcess = Process::fromShellCommandline($sCmd);
+        } else {
+            $sCmd = implode(' && ', [
+                'mkdir -p ' . escapeshellarg($sPath),
+                'cd ' . escapeshellarg($sPath),
+                'git clone ' . escapeshellarg($oRepository->ssh_url ?? '') . ' . 2>&1',
+                $sBranchCheck,
+                'git checkout ' . escapeshellarg($sBranch) . ' 2>&1',
+            ]);
+            $oProcess = Process::fromShellCommandline($sCmd);
+        }
+
+        $oProcess->setTimeout(null);
+
+        return $oProcess;
     }
 
     // --------------------------------------------------------------------------
@@ -162,69 +318,6 @@ final class Pull extends Base
     // --------------------------------------------------------------------------
 
     /**
-     * Deletes an existing repository
-     *
-     * @param Repository $oRepository The repository to delete
-     */
-    private function repositoryDelete(Repository $oRepository)
-    {
-        try {
-            $sPath = $this->getRepositoryPath($oRepository);
-            System::exec('rm -rf "' . $sPath . '"');
-        } catch (CommandFailedException $e) {
-            throw new DeleteException('Failed to create repository: ' . $e->getMessage());
-        }
-    }
-
-    // --------------------------------------------------------------------------
-
-    /**
-     * Updates an existing repository
-     *
-     * @param Repository $oRepository The repository to update
-     */
-    private function repositoryUpdate(Repository $oRepository)
-    {
-        try {
-            $sBranch = $this->getBranch($oRepository);
-            $sPath   = $this->getRepositoryPath($oRepository);
-            System::exec([
-                'cd "' . $sPath . '"',
-                'git fetch 2>&1',
-                'git checkout ' . $sBranch . ' 2>&1',
-                'git pull origin ' . $sBranch . ' 2>&1',
-            ]);
-        } catch (CommandFailedException $e) {
-            throw new UpdateException('Failed to update repository: ' . $e->getMessage());
-        }
-    }
-
-    // --------------------------------------------------------------------------
-
-    /**
-     * Creates a new repository
-     *
-     * @param Repository $oRepository The repository to create
-     */
-    private function repositoryCreate(Repository $oRepository)
-    {
-        try {
-            $sBranch = $this->getBranch($oRepository);
-            $sPath   = $this->getRepositoryPath($oRepository);
-            System::exec([
-                'mkdir -p "' . $sPath . '"',
-                'cd "' . $sPath . '"',
-                'git clone ' . $oRepository->ssh_url . ' . 2>&1',
-                'git checkout ' . $sBranch . ' 2>&1',
-            ]);
-        } catch (CommandFailedException $e) {
-            throw new CreateException('Failed to create repository: ' . $e->getMessage());
-        }
-    }
-
-    // --------------------------------------------------------------------------
-
-    /**
      * Returns the branch to checkout/pull for the repository
      *
      * @param Repository $oRepository The repository
@@ -239,14 +332,47 @@ final class Pull extends Base
     // --------------------------------------------------------------------------
 
     /**
+     * Validates that the target directory exists
+     *
+     * @return $this
+     * @throws DoesNotExistException
+     */
+    private function validateDirectory(): self
+    {
+        $sDir = $this->getDirectory();
+        if (!Directory::exists($sDir)) {
+            throw new DoesNotExistException('"' . $sDir . '" does not exist');
+        }
+
+        return $this;
+    }
+
+    // --------------------------------------------------------------------------
+
+    /**
+     * Returns the base directory for repositories
+     *
+     * @return string
+     */
+    private function getDirectory(): string
+    {
+        $sDir = $this->oInput->getOption('dir') ?: getcwd();
+        return Directory::resolve($sDir);
+    }
+
+    // --------------------------------------------------------------------------
+
+    /**
      * Returns the path for where to install the repository
      *
      * @param Repository $oRepository The repository being installed
      *
      * @return string
      */
-    private function getRepositoryPath(Repository $oRepository)
+    private function getRepositoryPath(Repository $oRepository): string
     {
-        return getcwd() . Directory::normalize('/' . $oRepository->name);
+        $sDir = $this->getDirectory();
+
+        return rtrim($sDir, '/\\') . Directory::normalize('/' . $oRepository->name);
     }
 }
