@@ -11,6 +11,7 @@ use Nails\Cli\Exceptions\Repository\UpdateException;
 use Nails\Cli\Exceptions\RepositoryException;
 use Nails\Cli\Exceptions\System\CommandFailedException;
 use Nails\Cli\Helper\Curl;
+use Nails\Cli\Helper\Debug;
 use Nails\Cli\Helper\Directory;
 use Nails\Cli\Helper\System;
 
@@ -124,7 +125,7 @@ final class Pull extends Base
             $iPage++;
         }
 
-        sort($aRepositories);
+        usort($aRepositories, fn($a, $b) => $a->name <=> $b->name);
 
         $aOut = [];
         foreach ($aRepositories as $oRepository) {
