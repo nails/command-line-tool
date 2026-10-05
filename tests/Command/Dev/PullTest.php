@@ -7,6 +7,7 @@ use Nails\Cli\Entities\Repository;
 use Nails\Cli\Exceptions\Directory\DoesNotExistException;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\BufferedOutput;
 
 final class PullTest extends TestCase
 {
@@ -163,5 +164,95 @@ final class PullTest extends TestCase
 
         // Cleanup
         exec('rm -rf ' . escapeshellarg($tempDir));
+    }
+
+    public function testLinkAgentKitSkipsWhenAgentsDirectoryIsMissing(): void
+    {
+        $tempDir = sys_get_temp_dir() . '/nails_agent_kit_' . uniqid();
+        mkdir($tempDir, 0777, true);
+
+        $command = $this->makePullCommand($tempDir);
+        $refMethod = new \ReflectionMethod(Pull::class, 'linkAgentKit');
+        $refMethod->invoke($command);
+
+        $this->assertFileDoesNotExist($tempDir . '/AGENTS.md');
+        $this->assertFileDoesNotExist($tempDir . '/CLAUDE.md');
+
+        exec('rm -rf ' . escapeshellarg($tempDir));
+    }
+
+    public function testLinkAgentKitCreatesSymlinksWhenAgentsCloneExists(): void
+    {
+        $tempDir = sys_get_temp_dir() . '/nails_agent_kit_' . uniqid();
+        mkdir($tempDir . '/agents/skills', 0777, true);
+        file_put_contents($tempDir . '/agents/AGENTS.md', "# Nails\n");
+        file_put_contents($tempDir . '/agents/CLAUDE.md', "@AGENTS.md\n");
+
+        $command = $this->makePullCommand($tempDir);
+        $refMethod = new \ReflectionMethod(Pull::class, 'linkAgentKit');
+        $refMethod->invoke($command);
+
+        $this->assertTrue(is_link($tempDir . '/AGENTS.md'));
+        $this->assertSame('agents/AGENTS.md', readlink($tempDir . '/AGENTS.md'));
+        $this->assertTrue(is_link($tempDir . '/CLAUDE.md'));
+        $this->assertSame('agents/CLAUDE.md', readlink($tempDir . '/CLAUDE.md'));
+        $this->assertTrue(is_link($tempDir . '/.agents/skills'));
+        $this->assertSame('../agents/skills', readlink($tempDir . '/.agents/skills'));
+        $this->assertTrue(is_link($tempDir . '/.claude/skills'));
+        $this->assertSame('../agents/skills', readlink($tempDir . '/.claude/skills'));
+        $this->assertTrue(is_link($tempDir . '/.cursor/skills'));
+        $this->assertSame('../agents/skills', readlink($tempDir . '/.cursor/skills'));
+        $this->assertSame("# Nails\n", file_get_contents($tempDir . '/AGENTS.md'));
+
+        exec('rm -rf ' . escapeshellarg($tempDir));
+    }
+
+    public function testLinkAgentKitSkipsExistingRegularFiles(): void
+    {
+        $tempDir = sys_get_temp_dir() . '/nails_agent_kit_' . uniqid();
+        mkdir($tempDir . '/agents', 0777, true);
+        file_put_contents($tempDir . '/agents/AGENTS.md', "# Kit\n");
+        file_put_contents($tempDir . '/AGENTS.md', "# Local\n");
+
+        $command = $this->makePullCommand($tempDir);
+        $refMethod = new \ReflectionMethod(Pull::class, 'linkAgentKit');
+        $refMethod->invoke($command);
+
+        $this->assertFalse(is_link($tempDir . '/AGENTS.md'));
+        $this->assertSame("# Local\n", file_get_contents($tempDir . '/AGENTS.md'));
+
+        exec('rm -rf ' . escapeshellarg($tempDir));
+    }
+
+    public function testLinkAgentKitReplacesIncorrectSymlink(): void
+    {
+        $tempDir = sys_get_temp_dir() . '/nails_agent_kit_' . uniqid();
+        mkdir($tempDir . '/agents', 0777, true);
+        file_put_contents($tempDir . '/agents/AGENTS.md', "# Kit\n");
+        symlink('elsewhere', $tempDir . '/AGENTS.md');
+
+        $command = $this->makePullCommand($tempDir);
+        $refMethod = new \ReflectionMethod(Pull::class, 'linkAgentKit');
+        $refMethod->invoke($command);
+
+        $this->assertTrue(is_link($tempDir . '/AGENTS.md'));
+        $this->assertSame('agents/AGENTS.md', readlink($tempDir . '/AGENTS.md'));
+
+        exec('rm -rf ' . escapeshellarg($tempDir));
+    }
+
+    private function makePullCommand(string $dir): Pull
+    {
+        $command = new Pull();
+        $input = new ArrayInput(['--dir' => $dir], $command->getDefinition());
+        $input->bind($command->getDefinition());
+
+        $refInput = new \ReflectionProperty(Pull::class, 'oInput');
+        $refInput->setValue($command, $input);
+
+        $refOutput = new \ReflectionProperty(Pull::class, 'oOutput');
+        $refOutput->setValue($command, new BufferedOutput());
+
+        return $command;
     }
 }

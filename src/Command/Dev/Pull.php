@@ -20,6 +20,11 @@ final class Pull extends Base
      */
     const DEFAULT_CONCURRENCY = 4;
 
+    /**
+     * Directory name of the cloned nails/agents repository
+     */
+    const AGENT_KIT_DIR = 'agents';
+
     // --------------------------------------------------------------------------
 
     /**
@@ -77,6 +82,8 @@ final class Pull extends Base
 
             $this->oOutput->writeln('');
             $this->oOutput->writeln('Finished processing repositories');
+
+            $this->linkAgentKit();
 
         } catch (FetchException $e) {
             $this->oOutput->writeln('<error>' . $e->getMessage() . '</error>');
@@ -374,5 +381,78 @@ final class Pull extends Base
         $sDir = $this->getDirectory();
 
         return rtrim($sDir, '/\\') . Directory::normalize('/' . $oRepository->name);
+    }
+
+    // --------------------------------------------------------------------------
+
+    /**
+     * Symlinks AGENTS.md, CLAUDE.md, and skill directories at the checkout root
+     * to the cloned agents repository, when it is present.
+     */
+    private function linkAgentKit(): void
+    {
+        $sDir    = rtrim($this->getDirectory(), '/\\');
+        $sAgents = $sDir . DIRECTORY_SEPARATOR . static::AGENT_KIT_DIR;
+
+        if (!is_dir($sAgents)) {
+            return;
+        }
+
+        $this->oOutput->writeln('');
+        $this->oOutput->writeln('Linking agent kit');
+
+        $this->linkAgentKitEntry($sDir, 'AGENTS.md', static::AGENT_KIT_DIR . '/AGENTS.md');
+        $this->linkAgentKitEntry($sDir, 'CLAUDE.md', static::AGENT_KIT_DIR . '/CLAUDE.md');
+
+        if (!is_dir($sAgents . DIRECTORY_SEPARATOR . 'skills')) {
+            return;
+        }
+
+        foreach (['.agents', '.claude', '.cursor'] as $sParent) {
+            $sParentPath = $sDir . DIRECTORY_SEPARATOR . $sParent;
+            if (!is_dir($sParentPath) && !mkdir($sParentPath, 0777, true) && !is_dir($sParentPath)) {
+                $this->oOutput->writeln('- <error>Failed to create ' . $sParent . '</error>');
+                continue;
+            }
+
+            $this->linkAgentKitEntry($sDir, $sParent . '/skills', '../' . static::AGENT_KIT_DIR . '/skills');
+        }
+    }
+
+    // --------------------------------------------------------------------------
+
+    /**
+     * Creates or refreshes a relative symlink at the checkout root
+     *
+     * @param string $sDir    The checkout directory
+     * @param string $sLink   Path of the symlink, relative to the checkout
+     * @param string $sTarget Relative target the symlink should point at
+     */
+    private function linkAgentKitEntry(string $sDir, string $sLink, string $sTarget): void
+    {
+        $sLinkPath   = $sDir . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $sLink);
+        $sLinkParent = dirname($sLinkPath);
+        $sSource     = $sLinkParent . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $sTarget);
+
+        if (!file_exists($sSource)) {
+            return;
+        }
+
+        if (is_link($sLinkPath)) {
+            if (readlink($sLinkPath) === $sTarget) {
+                return;
+            }
+            unlink($sLinkPath);
+        } elseif (file_exists($sLinkPath)) {
+            $this->oOutput->writeln('- <comment>' . $sLink . '</comment> exists; skipped');
+            return;
+        }
+
+        if (!symlink($sTarget, $sLinkPath)) {
+            $this->oOutput->writeln('- <error>Failed to link ' . $sLink . '</error>');
+            return;
+        }
+
+        $this->oOutput->writeln('- <info>' . $sLink . '</info> linked');
     }
 }
